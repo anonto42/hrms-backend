@@ -3,9 +3,15 @@ package com.hrmf.hrms_backend.dto.auth;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
-import lombok.Getter;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
-@Getter
+@Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class SignInRequestDto {
 
     @NotBlank(message = "You must give the email!")
@@ -13,6 +19,5 @@ public class SignInRequestDto {
     private String email;
 
     @NotBlank(message = "You must give the password!")
-    @Min(value = 6,message = "Password must be atlas 6 characters!")
     private String password;
 }
