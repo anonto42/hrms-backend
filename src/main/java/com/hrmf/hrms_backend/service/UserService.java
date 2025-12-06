@@ -248,4 +248,9 @@ public class UserService {
     public List<User> getActiveUsers() {
         return userRepository.findByStatus(UserStatus.ACTIVE);
     }
+
+    @Transactional
+    public void saveUser(User user) {
+        userRepository.save(user);
+    }
 }
