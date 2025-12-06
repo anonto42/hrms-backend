@@ -235,6 +235,12 @@ public class AuthService {
     public ApiResponseDto<Void> logout() {
         User currentUser = securityUtil.getCurrentUserOrThrow();
 
+        // Check if already logged out
+        if (currentUser.getRefreshToken() == null) {
+            log.warn("User already logged out: {}", currentUser.getEmail());
+            return ApiResponseDto.<Void>success("Already logged out");
+        }
+
         // Clear refresh token
         userService.updateRefreshToken(currentUser.getId(), null);
 
