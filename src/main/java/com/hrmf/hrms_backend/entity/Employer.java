@@ -5,7 +5,10 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
+import java.time.LocalDate;
 import java.util.UUID;
 
 @Entity
@@ -23,7 +26,7 @@ public class Employer {
     @JoinColumn(name = "user_id", nullable = false, unique = true)
     private User user;
 
-    @OneToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "created_by", nullable = false)
     private User createdBy;
 
@@ -35,4 +38,12 @@ public class Employer {
 
     @Column(nullable = false)
     private String number;
+
+    @CreationTimestamp
+    @Column(name = "createdAt")
+    private LocalDate createdAt;
+
+    @UpdateTimestamp
+    @Column(name = "updated_at")
+    private LocalDate updatedAt;
 }
