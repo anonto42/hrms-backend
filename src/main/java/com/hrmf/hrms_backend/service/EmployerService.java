@@ -90,6 +90,7 @@ public class EmployerService {
                 .name(addEmployeeRequestDto.getName())
                 .email(addEmployeeRequestDto.getEmail())
                 .gender(addEmployeeRequestDto.getGender())
+                .role(employeeUser.getRole())
                 .employeeRole(addEmployeeRequestDto.getEmployeeRole())
                 .build();
     }
