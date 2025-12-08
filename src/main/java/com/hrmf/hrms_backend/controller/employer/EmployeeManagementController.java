@@ -1,9 +1,9 @@
-package com.hrmf.hrms_backend.controller;
+package com.hrmf.hrms_backend.controller.employer;
 
 import com.hrmf.hrms_backend.dto.employee.EmployeeDetailDto;
 import com.hrmf.hrms_backend.dto.employee.EmployeeListDto;
-import com.hrmf.hrms_backend.dto.employee.EmployerDashboardStatsDto;
-import com.hrmf.hrms_backend.dto.employer.*;
+import com.hrmf.hrms_backend.dto.employer.AddEmployeeRequestDto;
+import com.hrmf.hrms_backend.dto.employer.AddEmployeeResponseDto;
 import com.hrmf.hrms_backend.enums.UserStatus;
 import com.hrmf.hrms_backend.service.EmployerService;
 import jakarta.validation.Valid;
@@ -16,21 +16,21 @@ import java.util.Map;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("/api/v1/employer")
+@RequestMapping("/api/v1/employer/employees")
 @RequiredArgsConstructor
-public class EmployerController {
+public class EmployeeManagementController {
 
     private final EmployerService employerService;
 
     // Add employee
-    @PostMapping("/employees")
+    @PostMapping
     public ResponseEntity<?> addEmployee(@Valid @RequestBody AddEmployeeRequestDto request) {
         AddEmployeeResponseDto response = employerService.addEmployee(request);
         return ResponseEntity.ok().body(response);
     }
 
     // Get all employees created by current employer
-    @GetMapping("/employees")
+    @GetMapping
     public ResponseEntity<?> getMyEmployees(
             @RequestParam(required = false) String search,
             @RequestParam(required = false) UserStatus status) {
@@ -40,7 +40,7 @@ public class EmployerController {
     }
 
     // Get paginated employees created by current employer
-    @GetMapping("/employees/paginated")
+    @GetMapping("/paginated")
     public ResponseEntity<?> getMyEmployeesPaginated(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size,
@@ -52,35 +52,35 @@ public class EmployerController {
     }
 
     // Get single employee by ID
-    @GetMapping("/employees/{employeeId}")
+    @GetMapping("/{employeeId}")
     public ResponseEntity<?> getEmployeeById(@PathVariable UUID employeeId) {
         EmployeeDetailDto employee = employerService.getEmployeeById(employeeId);
         return ResponseEntity.ok(employee);
     }
 
     // Get single employee by email
-    @GetMapping("/employees/email/{email}")
+    @GetMapping("/email/{email}")
     public ResponseEntity<?> getEmployeeByEmail(@PathVariable String email) {
         EmployeeDetailDto employee = employerService.getEmployeeByEmail(email);
         return ResponseEntity.ok(employee);
     }
 
     // Block employee
-    @PostMapping("/employees/{employeeId}/block")
+    @PostMapping("/{employeeId}/block")
     public ResponseEntity<?> blockEmployee(@PathVariable UUID employeeId) {
         employerService.blockEmployee(employeeId);
         return ResponseEntity.ok(Map.of("message", "Employee blocked successfully"));
     }
 
     // Unblock employee
-    @PostMapping("/employees/{employeeId}/unblock")
+    @PostMapping("/{employeeId}/unblock")
     public ResponseEntity<?> unblockEmployee(@PathVariable UUID employeeId) {
         employerService.unblockEmployee(employeeId);
         return ResponseEntity.ok(Map.of("message", "Employee unblocked successfully"));
     }
 
     // Update employee status
-    @PatchMapping("/employees/{employeeId}/status")
+    @PatchMapping("/{employeeId}/status")
     public ResponseEntity<?> updateEmployeeStatus(
             @PathVariable UUID employeeId,
             @RequestParam UserStatus status) {
@@ -90,16 +90,9 @@ public class EmployerController {
     }
 
     // Delete employee
-    @DeleteMapping("/employees/{employeeId}")
+    @DeleteMapping("/{employeeId}")
     public ResponseEntity<?> deleteEmployee(@PathVariable UUID employeeId) {
         employerService.deleteEmployee(employeeId);
         return ResponseEntity.ok(Map.of("message", "Employee deleted successfully"));
-    }
-
-    // Get dashboard statistics
-    @GetMapping("/dashboard/stats")
-    public ResponseEntity<?> getDashboardStats() {
-        EmployerDashboardStatsDto stats = employerService.getDashboardStats();
-        return ResponseEntity.ok(stats);
     }
 }
