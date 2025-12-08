@@ -49,4 +49,15 @@ public interface EmployeeRepository extends JpaRepository<Employee, UUID> {
             @Param("search") String search,
             Pageable pageable
     );
+
+    // Find employee by user ID
+    Optional<Employee> findByUserId(UUID userId);
+
+    // Find employer ID by employee user ID
+    @Query("SELECT e.employer.id FROM Employee e WHERE e.user.id = :employeeUserId")
+    Optional<UUID> findEmployerIdByEmployeeUserId(@Param("employeeUserId") UUID employeeUserId);
+
+    // Find employee record by employee user ID
+    @Query("SELECT e FROM Employee e WHERE e.user.id = :employeeUserId")
+    Optional<Employee> findByEmployeeUserId(@Param("employeeUserId") UUID employeeUserId);
 }
