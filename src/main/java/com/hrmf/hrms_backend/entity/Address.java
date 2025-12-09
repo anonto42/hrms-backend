@@ -3,6 +3,7 @@ package com.hrmf.hrms_backend.entity;
 import com.hrmf.hrms_backend.enums.AddressType;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -12,6 +13,7 @@ import java.util.UUID;
 @Table(name = "addresses")
 @Data
 @NoArgsConstructor
+@Builder
 @AllArgsConstructor
 public class Address {
     @Id

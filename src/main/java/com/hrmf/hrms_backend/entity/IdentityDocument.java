@@ -16,6 +16,7 @@ import java.util.UUID;
 @Table(name = "identity_documents")
 @Getter
 @Setter
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
 public class IdentityDocument {

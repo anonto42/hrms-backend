@@ -12,6 +12,7 @@ import java.util.UUID;
 @Table(name = "personal_details")
 @Getter
 @Setter
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
 public class PersonalDetails {

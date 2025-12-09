@@ -9,6 +9,7 @@ import java.util.UUID;
 @Table(name = "emergency_contacts")
 @Getter
 @Setter
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
 public class EmergencyContact {
