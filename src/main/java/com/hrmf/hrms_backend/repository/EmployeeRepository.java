@@ -14,25 +14,19 @@ import java.util.Optional;
 import java.util.UUID;
 
 public interface EmployeeRepository extends JpaRepository<Employee, UUID> {
-
-    // Basic queries
     List<Employee> findByEmployer(User employer);
     Page<Employee> findByEmployer(User employer, Pageable pageable);
 
     Optional<Employee> findByIdAndEmployer(UUID id, User employer);
-
-    // Find by user email
     Optional<Employee> findByUserEmailAndEmployer(String email, User employer);
 
-    // Find by user status
     List<Employee> findByEmployerAndUserStatus(User employer, UserStatus status);
     Page<Employee> findByEmployerAndUserStatus(User employer, UserStatus status, Pageable pageable);
 
-    // Count queries
+
     long countByEmployer(User employer);
     long countByEmployerAndUserStatus(User employer, UserStatus status);
 
-    // For search functionality
     @Query("SELECT e FROM Employee e WHERE e.employer = :employer AND " +
             "(LOWER(e.user.name) LIKE LOWER(CONCAT('%', :search, '%')) OR " +
             "LOWER(e.user.email) LIKE LOWER(CONCAT('%', :search, '%')))")
@@ -40,7 +34,6 @@ public interface EmployeeRepository extends JpaRepository<Employee, UUID> {
             @Param("employer") User employer,
             @Param("search") String search
     );
-
     @Query("SELECT e FROM Employee e WHERE e.employer = :employer AND " +
             "(LOWER(e.user.name) LIKE LOWER(CONCAT('%', :search, '%')) OR " +
             "LOWER(e.user.email) LIKE LOWER(CONCAT('%', :search, '%')))")
@@ -49,15 +42,6 @@ public interface EmployeeRepository extends JpaRepository<Employee, UUID> {
             @Param("search") String search,
             Pageable pageable
     );
-
-    // Find employee by user ID
-    Optional<Employee> findByUserId(UUID userId);
-
-    // Find employer ID by employee user ID
     @Query("SELECT e.employer.id FROM Employee e WHERE e.user.id = :employeeUserId")
     Optional<UUID> findEmployerIdByEmployeeUserId(@Param("employeeUserId") UUID employeeUserId);
-
-    // Find employee record by employee user ID
-    @Query("SELECT e FROM Employee e WHERE e.user.id = :employeeUserId")
-    Optional<Employee> findByEmployeeUserId(@Param("employeeUserId") UUID employeeUserId);
 }
