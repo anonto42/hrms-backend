@@ -5,6 +5,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDate;
+
 @Data
 @Builder
 @NoArgsConstructor
@@ -13,9 +15,8 @@ public class PersonalDetailsResponse {
     private String id;
     private String about;
     private String employerCode;
+    private String niNo;
     private String gender;
-    private String dateOfBirth;
+    private LocalDate dateOfBirth;
     private String maritalStatus;
-    private String mobile;
-    private String emergencyContact;
 }
