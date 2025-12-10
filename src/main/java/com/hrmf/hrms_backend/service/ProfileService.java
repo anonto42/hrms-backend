@@ -301,7 +301,6 @@ public class ProfileService {
                 .joiningDate(request.getJoiningDate())
                 .issueDate(request.getIssueDate())
                 .expiryDate(request.getExpDate())
-                .isCurrent(request.getExpDate() == null || request.getExpDate().isAfter(LocalDate.now()))
                 .build();
 
         JobDetails saved = jobDetailsRepository.save(jobDetails);
@@ -328,7 +327,6 @@ public class ProfileService {
         jobDetails.setJoiningDate(request.getJoiningDate());
         jobDetails.setIssueDate(request.getIssueDate());
         jobDetails.setExpiryDate(request.getExpDate());
-        jobDetails.setIsCurrent(request.getExpDate() == null || request.getExpDate().isAfter(LocalDate.now()));
 
         JobDetails saved = jobDetailsRepository.save(jobDetails);
 
@@ -735,8 +733,6 @@ public class ProfileService {
                 .joiningDate(details.getJoiningDate() != null ? details.getJoiningDate().toString() : null)
                 .issueDate(details.getIssueDate() != null ? details.getIssueDate().toString() : null)
                 .expiryDate(details.getExpiryDate() != null ? details.getExpiryDate().toString() : null)
-                .isCurrent(details.getIsCurrent())
-                .createdAt(details.getCreatedAt())
                 .build();
     }
 

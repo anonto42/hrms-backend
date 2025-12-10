@@ -5,8 +5,6 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDateTime;
-
 @Data
 @Builder
 @NoArgsConstructor
@@ -22,6 +20,4 @@ public class JobDetailsResponse {
     private String joiningDate;
     private String issueDate;
     private String expiryDate;
-    private Boolean isCurrent;
-    private LocalDateTime createdAt;
 }
