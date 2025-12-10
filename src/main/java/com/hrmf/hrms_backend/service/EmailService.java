@@ -2,6 +2,8 @@ package com.hrmf.hrms_backend.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.mail.SimpleMailMessage;
+import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
 
 @Slf4j
@@ -9,12 +11,11 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class EmailService {
 
+    private final JavaMailSender mailSender;
+
     public void sendPasswordResetOtpEmail(String email, String name, String otp) {
-        // TODO: Implement email sending
-        // Use JavaMailSender or external service like SendGrid, AWS SES
         log.info("Sending password reset OTP to {}: {}", email, otp);
 
-        // Example email content
         String subject = "Password Reset OTP - HRMS";
         String body = String.format("""
                 Hello %s,
@@ -31,6 +32,13 @@ public class EmailService {
 
         log.info("Email subject: {}", subject);
         log.info("Email body: {}", body);
+
+        SimpleMailMessage message = new SimpleMailMessage();
+        message.setTo(email);
+        message.setSubject(subject);
+        message.setText(body);
+
+        mailSender.send(message);
     }
 
     public void sendPasswordResetConfirmationEmail(String email, String name) {
