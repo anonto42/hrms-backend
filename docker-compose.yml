@@ -17,7 +17,6 @@ services:
   mongo:
     image: mongo:7
     container_name: mongo_db
-    command: ["mongod", "--auth", "0"]
     environment:
       MONGO_INITDB_DATABASE: hrms
     ports:
