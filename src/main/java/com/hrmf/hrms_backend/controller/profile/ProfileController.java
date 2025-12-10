@@ -205,7 +205,7 @@ public class ProfileController {
         return ResponseEntity.ok(response);
     }
 
-    @PostMapping("/company-details")
+    @PutMapping("/company-details")
     public ResponseEntity<?> createOrUpdateCompanyInformation(
             @Valid @RequestBody UpdateCompanyInformationDto request) {
         var response = profileService.createOrUpdateCompanyInformation(request);

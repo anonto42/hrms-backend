@@ -787,8 +787,6 @@ public class ProfileService {
                 .companyEmail(company.getCompanyEmail())
                 .contactNumber(company.getContactNumber())
                 .address(company.getAddress())
-                .createdAt(company.getCreatedAt())
-                .updatedAt(company.getUpdatedAt())
                 .build();
     }
 
