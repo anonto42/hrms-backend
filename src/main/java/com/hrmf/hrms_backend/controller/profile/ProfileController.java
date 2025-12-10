@@ -58,7 +58,7 @@ public class ProfileController {
         return ResponseEntity.ok(response);
     }
 
-    @PostMapping("/contact-information")
+    @PutMapping("/contact-information")
     public ResponseEntity<ContactInformationResponse> createOrUpdateContactInformation(
             @Valid @RequestBody UpdateContactInformationDto request) {
         ContactInformationResponse response = profileService.createOrUpdateContactInformation(request);

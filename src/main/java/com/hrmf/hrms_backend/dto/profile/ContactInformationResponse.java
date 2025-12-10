@@ -17,6 +17,7 @@ public class ContactInformationResponse {
     private String address3;
     private String city;
     private String country;
-    private String addressType;
-    private Boolean isPrimary;
+    private String mobile;
+    private String emergencyContact;
+    private String email;
 }

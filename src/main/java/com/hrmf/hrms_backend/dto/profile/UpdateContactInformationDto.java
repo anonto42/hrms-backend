@@ -11,5 +11,6 @@ public class UpdateContactInformationDto {
     private String country;
     private String mobile;
     private String emergencyContact;
+    private String address3;
     private String email;
 }

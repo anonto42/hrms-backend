@@ -28,6 +28,7 @@ public class ProfileService {
     private final IdentityDocumentRepository identityDocumentRepository;
     private final NationalDetailsRepository nationalDetailsRepository;
     private final AddressRepository addressRepository;
+    private final ContactRepository contactInformationRepository;
     private final EmergencyContactRepository emergencyContactRepository;
     private final EducationDetailsRepository educationDetailsRepository;
     private final JobDetailsRepository jobDetailsRepository;
@@ -124,8 +125,6 @@ public class ProfileService {
                         .otherDocumentExpiryDate(request.getExpiryDate())
                         .build());
 
-
-
         NationalDetails saved = nationalDetailsRepository.save(nationalId);
 
         return convertToNationalIdDetailsResponse(saved);
@@ -146,20 +145,31 @@ public class ProfileService {
         User user = securityUtil.getCurrentUserOrThrow();
 
         // Find primary address or create new one
-        Address address = addressRepository.findByUserAndIsPrimary(user, true)
-                .orElse(Address.builder()
+        ContactInformation contactInformation = contactInformationRepository.findFirstByUser(user)
+                .orElse(ContactInformation.builder()
                         .user(user)
-                        .addressType(AddressType.PRIMARY)
-                        .isPrimary(true)
+                        .email(request.getEmail())
+                        .city(request.getCity())
+                        .postCode(request.getPostCode())
+                        .emergencyContact(request.getEmergencyContact())
+                        .country(request.getCountry())
+                        .mobile(request.getMobile())
+                        .address1(request.getAddress1())
+                        .address2(request.getAddress2())
+                        .address3(request.getAddress3())
                         .build());
 
-        address.setPostCode(request.getPostCode());
-        address.setAddress1(request.getAddress1());
-        address.setAddress2(request.getAddress2());
-        address.setCity(request.getCity());
-        address.setCountry(request.getCountry());
+        contactInformation.setPostCode(request.getPostCode());
+        contactInformation.setAddress1(request.getAddress1());
+        contactInformation.setAddress2(request.getAddress2());
+        contactInformation.setCity(request.getCity());
+        contactInformation.setCountry(request.getCountry());
+        contactInformation.setEmergencyContact(request.getEmergencyContact());
+        contactInformation.setEmail(request.getEmail());
+        contactInformation.setAddress3(request.getAddress3());
+        contactInformation.setMobile(request.getMobile());
 
-        Address saved = addressRepository.save(address);
+        ContactInformation saved = contactInformationRepository.save(contactInformation);
 
         // Update user's email if provided
         if (request.getEmail() != null && !request.getEmail().isEmpty()) {
@@ -173,10 +183,10 @@ public class ProfileService {
     @Transactional(readOnly = true)
     public ContactInformationResponse getContactInformation() {
         User user = securityUtil.getCurrentUserOrThrow();
-        Address address = addressRepository.findByUserAndIsPrimary(user, true)
+        ContactInformation contact = contactInformationRepository.findFirstByUser(user)
                 .orElseThrow(() -> new CustomException("Contact information not found", HttpStatus.NOT_FOUND));
 
-        return convertToContactInformationResponse(address);
+        return convertToContactInformationResponse(contact);
     }
 
     @Transactional
@@ -619,7 +629,7 @@ public class ProfileService {
     }
 
     private ContactInformationResponse getContactInformationResponse(User user) {
-        return addressRepository.findByUserAndIsPrimary(user, true)
+        return contactInformationRepository.findFirstByUser(user)
                 .map(this::convertToContactInformationResponse)
                 .orElse(null);
     }
@@ -705,7 +715,7 @@ public class ProfileService {
                 .build();
     }
 
-    private ContactInformationResponse convertToContactInformationResponse(Address address) {
+    private ContactInformationResponse convertToContactInformationResponse(ContactInformation address) {
         return ContactInformationResponse.builder()
                 .id(address.getId().toString())
                 .postCode(address.getPostCode())
@@ -714,8 +724,9 @@ public class ProfileService {
                 .address3(address.getAddress3())
                 .city(address.getCity())
                 .country(address.getCountry())
-                .addressType(address.getAddressType() != null ? address.getAddressType().name() : null)
-                .isPrimary(address.getIsPrimary())
+                .mobile(address.getMobile())
+                .emergencyContact(address.getEmergencyContact())
+                .email(address.getEmail())
                 .build();
     }
 
