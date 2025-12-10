@@ -33,13 +33,17 @@ spring:
     host: smtp.gmail.com
     port: 587
     username: ${MAIL_ADDRESS_USERNAME:anontom90@gmail.com}
-    password: ${MAIL_APP_PASSWORD:ksd slkd lkd}
+    password: ${MAIL_APP_PASSWORD:byyp nttr zdjs dfxa}
     properties:
       mail:
         smtp:
           auth: true
-        starttls:
-          enable: true
+          starttls:
+            enable: true
+            required: true
+          connectiontimeout: 5000
+          timeout: 5000
+          writetimeout: 5000
 
   # Upload Configuration
   servlet:
