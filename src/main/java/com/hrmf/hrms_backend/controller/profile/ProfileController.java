@@ -142,7 +142,7 @@ public class ProfileController {
         return ResponseEntity.ok(response);
     }
 
-    @PostMapping("/service-details")
+    @PutMapping("/service-details")
     public ResponseEntity<?> createOrUpdateServiceDetails(
             @Valid @RequestBody UpdateServiceDetailsDto request) {
         var response = profileService.createOrUpdateServiceDetails(request);

@@ -20,6 +20,4 @@ public class ServiceDetailsResponse {
     private String dateOfConfirmation;
     private String contractStartDate;
     private String contractEndDate;
-    private LocalDateTime createdAt;
-    private LocalDateTime updatedAt;
 }

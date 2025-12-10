@@ -746,8 +746,6 @@ public class ProfileService {
                 .dateOfConfirmation(details.getDateOfConfirmation() != null ? details.getDateOfConfirmation().toString() : null)
                 .contractStartDate(details.getContractStartDate() != null ? details.getContractStartDate().toString() : null)
                 .contractEndDate(details.getContractEndDate() != null ? details.getContractEndDate().toString() : null)
-                .createdAt(details.getCreatedAt())
-                .updatedAt(details.getUpdatedAt())
                 .build();
     }
 
