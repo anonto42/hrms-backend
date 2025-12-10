@@ -679,6 +679,7 @@ public class ProfileService {
         return PersonalDetailsResponse.builder()
                 .id(details.getId().toString())
                 .about(details.getAbout())
+                .niNo(details.getNiNo())
                 .employerCode(details.getEmployerCode())
                 .gender(details.getGender() != null ? details.getGender().name() : null)
                 .dateOfBirth(details.getDateOfBirth() != null ? LocalDate.parse(details.getDateOfBirth().toString()) : null)
