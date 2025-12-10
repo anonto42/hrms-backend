@@ -1,4 +1,4 @@
-package com.hrmf.hrms_backend.controller;
+package com.hrmf.hrms_backend.controller.auth;
 
 import com.hrmf.hrms_backend.dto.ApiResponseDto;
 import com.hrmf.hrms_backend.dto.auth.*;

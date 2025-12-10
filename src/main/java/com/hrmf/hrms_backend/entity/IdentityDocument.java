@@ -16,6 +16,7 @@ import java.util.UUID;
 @Table(name = "identity_documents")
 @Getter
 @Setter
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
 public class IdentityDocument {
@@ -36,6 +37,15 @@ public class IdentityDocument {
 
     private String nationality;
     private String country;
+
+    @Column(name = "share_code")
+    private String shareCode;
+
+    @Column(name = "immigration_status")
+    private String immigrationStatus;
+
+    @Column(name = "country_residency")
+    private String countryResidency;
 
     @Column(name = "issued_by")
     private String issuedBy;

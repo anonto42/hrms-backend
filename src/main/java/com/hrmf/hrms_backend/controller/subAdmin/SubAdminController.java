@@ -1,4 +1,4 @@
-package com.hrmf.hrms_backend.controller;
+package com.hrmf.hrms_backend.controller.subAdmin;
 
 import com.hrmf.hrms_backend.dto.subAdmin.*;
 import com.hrmf.hrms_backend.enums.UserRole;

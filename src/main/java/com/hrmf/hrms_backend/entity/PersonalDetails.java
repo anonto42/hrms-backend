@@ -12,6 +12,7 @@ import java.util.UUID;
 @Table(name = "personal_details")
 @Getter
 @Setter
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
 public class PersonalDetails {
@@ -31,6 +32,9 @@ public class PersonalDetails {
 
     @Enumerated(EnumType.STRING)
     private Gender gender;
+
+    @Column(name = "ni_no")
+    private String niNo;
 
     @Column(name = "date_of_birth")
     private LocalDate dateOfBirth;
