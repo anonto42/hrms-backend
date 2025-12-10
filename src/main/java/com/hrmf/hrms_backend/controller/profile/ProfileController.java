@@ -215,7 +215,7 @@ public class ProfileController {
     // Document Verification
     @PostMapping("/document-verification/submit")
     public ResponseEntity<?> submitDocumentForVerification(
-            @Valid @RequestBody SubMitDocumentForVerificationDto request) {
+            @Valid @ModelAttribute SubMitDocumentForVerificationDto request) {
         var response = profileService.submitDocumentForVerification(request);
         return ResponseEntity.ok(response);
     }

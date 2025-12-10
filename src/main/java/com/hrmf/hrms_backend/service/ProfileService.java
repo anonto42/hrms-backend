@@ -36,6 +36,7 @@ public class ProfileService {
     private final TrainingDetailsRepository trainingDetailsRepository;
     private final CompanyInformationRepository companyInformationRepository;
     private final DocumentVerificationRepository documentVerificationRepository;
+    private final FileStorageService fileStorageService;
 
     @Transactional(readOnly = true)
     public ProfileResponse getCompleteProfile() {
@@ -547,14 +548,21 @@ public class ProfileService {
     public DocumentVerificationResponse submitDocumentForVerification(SubMitDocumentForVerificationDto request) {
         User user = securityUtil.getCurrentUserOrThrow();
 
-        documentVerificationRepository.findByUserAndVerificationStatus(user, VerificationStatus.PENDING)
-                .orElseThrow(()-> new CustomException("Your right to work data was already exist on pending status", HttpStatus.ALREADY_REPORTED));
+        // Check for existing verifications in restricted statuses
+        checkIfVerificationExists(user, VerificationStatus.PENDING,
+                "Your right to work data already exists with pending status. Please wait for review.");
 
-        documentVerificationRepository.findByUserAndVerificationStatus(user, VerificationStatus.APPROVED)
-                .orElseThrow(()-> new CustomException("Your right to work data was already exist on approved status", HttpStatus.ALREADY_REPORTED));
+        checkIfVerificationExists(user, VerificationStatus.APPROVED,
+                "Your right to work data already exists with approved status.");
 
-        documentVerificationRepository.findByUserAndVerificationStatus(user, VerificationStatus.UNDER_REVIEW)
-                .orElseThrow(()-> new CustomException("Your right to work data was already exist on under review status", HttpStatus.ALREADY_REPORTED));
+        checkIfVerificationExists(user, VerificationStatus.UNDER_REVIEW,
+                "Your right to work data already exists with under review status. Please wait for the result.");
+
+        String folderPath = "document-verifications/" + user.getId();
+        String fileName = fileStorageService.storeFile(request.getDocumentFile(), folderPath);
+
+        // Generate file URL
+        String fileUrl = fileStorageService.getFileUrl(fileName, folderPath);
 
         DocumentVerification documentVerification = DocumentVerification.builder()
                 .user(user)
@@ -564,7 +572,8 @@ public class ProfileService {
                 .documentType(request.getDocumentType())
                 .issueDate(request.getIssueDate())
                 .expiryDate(request.getExpiryDate())
-                .documentUrl(request.getDocumentUrl())
+                .documentUrl(fileUrl)
+                .documentFileName(fileName)
                 .verificationStatus(VerificationStatus.PENDING)
                 .build();
 
@@ -583,6 +592,16 @@ public class ProfileService {
         }
 
         return convertToDocumentVerificationResponse(verifications.get(0));
+    }
+
+    private void checkIfVerificationExists(User user, VerificationStatus status, String errorMessage) {
+        boolean exists = documentVerificationRepository
+                .findFirstByUserAndVerificationStatus(user, status)
+                .isPresent();
+
+        if (exists) {
+            throw new CustomException(errorMessage, HttpStatus.ALREADY_REPORTED);
+        }
     }
 
     private PersonalDetailsResponse getPersonalDetailsResponse(User user) {

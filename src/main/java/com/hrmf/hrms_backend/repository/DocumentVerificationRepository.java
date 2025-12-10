@@ -13,6 +13,7 @@ import java.util.UUID;
 @Repository
 public interface DocumentVerificationRepository extends JpaRepository<DocumentVerification, UUID> {
     List<DocumentVerification> findByUserOrderByCreatedAtDesc(User user);
+    Optional<DocumentVerification> findFirstByUserOrderByCreatedAtDesc(User user);
     List<DocumentVerification> findByVerificationStatus(VerificationStatus status);
-    Optional<DocumentVerification> findByUserAndVerificationStatus(User user, VerificationStatus status);
+    Optional<DocumentVerification> findFirstByUserAndVerificationStatus(User user, VerificationStatus status);
 }

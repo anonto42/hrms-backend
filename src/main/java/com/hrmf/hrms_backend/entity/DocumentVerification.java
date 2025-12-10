@@ -47,6 +47,9 @@ public class DocumentVerification {
     @Column(name = "document_url")
     private String documentUrl;
 
+    @Column(name = "document_file_name")
+    private String documentFileName;
+
     @Enumerated(EnumType.STRING)
     @Column(name = "verification_status", nullable = false)
     private VerificationStatus verificationStatus = VerificationStatus.PENDING;
