@@ -37,7 +37,13 @@ services:
     depends_on:
       - postgres_db
       - mongo_db
+    networks:
+      - app-network
 
 volumes:
   postgres_data:
   mongo_data:
+
+networks:
+  app-network:
+    driver: bridge
