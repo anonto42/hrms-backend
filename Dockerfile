@@ -1,17 +1,22 @@
-FROM eclipse-temurin:21-jdk-alpine
+FROM maven:3.9-eclipse-temurin-21-alpine AS builder
 
 WORKDIR /app
 
-COPY mvnw .
-COPY pom.xml .
-COPY .mvn .mvn
+COPY . .
 
-RUN ./mvnw dependency:go-offline -B
+RUN mvn clean package -DskipTests
 
-COPY src ./src
+FROM eclipse-temurin:21-jre-alpine
 
-RUN ./mvnw clean package -DskipTests
+WORKDIR /app
 
+COPY --from=builder /app/target/*.jar app.jar
+
+RUN addgroup -S spring && adduser -S spring -G spring
+USER spring:spring
+
+# Expose port
 EXPOSE 8080
 
-ENTRYPOINT ["java", "-jar", "target/hrms-backend-0.0.1-SNAPSHOT.jar"]
+# Run the application
+ENTRYPOINT ["java", "-jar", "app.jar"]
