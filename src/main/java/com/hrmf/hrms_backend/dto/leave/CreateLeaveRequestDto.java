@@ -2,6 +2,7 @@ package com.hrmf.hrms_backend.dto.leave;
 
 import com.hrmf.hrms_backend.enums.LeaveType;
 import jakarta.validation.constraints.FutureOrPresent;
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 
@@ -21,5 +22,15 @@ public class CreateLeaveRequestDto {
     @FutureOrPresent(message = "End date must be today or in the future")
     private LocalDate endDate;
 
+    @NotBlank(message = "You must give leave reason")
     private String reason;
+
+    @NotBlank(message = "You must give your job category")
+    private String jobCategory;
+
+    @NotBlank(message = "You must give your designation")
+    private String designation;
+
+    @NotBlank(message = "You must give a emergency contact")
+    private String emergencyContact;
 }
