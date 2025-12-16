@@ -3,13 +3,13 @@ package com.hrmf.hrms_backend.entity;
 import com.hrmf.hrms_backend.enums.LeaveStatus;
 import com.hrmf.hrms_backend.enums.LeaveType;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotBlank;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.YearMonth;
 import java.util.UUID;
 
 @Entity
@@ -59,7 +59,7 @@ public class LeaveRequest {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "approved_by")
-    private Employee approvedBy;
+    private User approvedBy;
 
     @Column(name = "approval_date")
     private LocalDateTime approvalDate;
@@ -74,4 +74,13 @@ public class LeaveRequest {
     @UpdateTimestamp
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
+
+    public boolean isInMonthYear(int year, int month) {
+        YearMonth targetMonth  =  YearMonth.of(year, month);
+        YearMonth startMonth = YearMonth.from(startDate);
+        YearMonth endMonth = YearMonth.from(endDate);
+
+        return !startDate.isAfter(targetMonth.atEndOfMonth()) &&
+               !endDate.isBefore(targetMonth.atDay(1));
+    };
 }
