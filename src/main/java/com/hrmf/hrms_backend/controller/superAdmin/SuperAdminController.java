@@ -1,4 +1,4 @@
-package com.hrmf.hrms_backend.controller;
+package com.hrmf.hrms_backend.controller.superAdmin;
 
 import com.hrmf.hrms_backend.dto.superAdmin.CreateSubAdminRequestDto;
 import com.hrmf.hrms_backend.dto.superAdmin.CreateSubAdminResponseDto;
