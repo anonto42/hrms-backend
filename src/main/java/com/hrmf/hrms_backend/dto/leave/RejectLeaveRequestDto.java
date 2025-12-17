@@ -1,9 +1,11 @@
 package com.hrmf.hrms_backend.dto.leave;
 
 import jakarta.validation.constraints.NotBlank;
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
-@Data
+@Getter
+@Setter
 public class RejectLeaveRequestDto {
     @NotBlank(message = "Rejection reason is required")
     private String reason;
