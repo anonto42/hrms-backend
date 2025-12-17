@@ -29,10 +29,22 @@ services:
     ports:
       - "8080:8080"
     environment:
+#      SPRING_PROFILES_ACTIVE: prod
       SPRING_DATASOURCE_URL: jdbc:postgresql://postgres_db:5432/hrmf
       SPRING_DATASOURCE_USERNAME: postgres
       SPRING_DATASOURCE_PASSWORD: postgres
       SPRING_DATA_MONGODB_URI: mongodb://mongo_db:27017/hrms
+      MAIL_ADDRESS_USERNAME: anontom90@gmail.com
+      MAIL_APP_PASSWORD: byyp nttr zdjs dfxa
+      APP_BASE_URL: http://localhost:8080
+      ADMIN_EMAIL: superadmin@hrms.com
+      ADMIN_PASSWORD: SuperAdmin@123
+      ADMIN_NAME: System Super Admin
+      ALLOWED_ORIGINS: "*"
+    restart: unless-stopped
+    volumes:
+      - ./logs:/app/logs
+      - ./config:/app/config
     depends_on:
       - postgres
       - mongo
