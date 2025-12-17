@@ -25,6 +25,7 @@ services:
 
   hrms_backend:
     build: .
+    image: anonto/hrms-backend:latest
     container_name: hrms_backend
     ports:
       - "8080:8080"
