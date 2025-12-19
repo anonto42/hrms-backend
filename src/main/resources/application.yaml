@@ -7,9 +7,9 @@ spring:
 
   # PostgreSQL Configuration
   datasource:
-    url: jdbc:postgresql://localhost:5432/hrmf
-    username: postgres
-    password: postgres
+    url: ${SPRING_DATASOURCE_URL:jdbc:postgresql://localhost:5432/hrmf }
+    username: ${SPRING_DATASOURCE_USERNAME:postgres}
+    password: ${SPRING_DATASOURCE_PASSWORD:postgres
 
   # JPA Configuration
   jpa:
@@ -22,7 +22,7 @@ spring:
   # MongoDB Configuration
   data:
     mongodb:
-      uri: mongodb://localhost:27017/hrms
+      uri: ${SPRING_DATA_MONGODB_URI:mongodb://localhost:27017/hrms}
 #      host: localhost
 #      port: 27017
 #      database: hrms
@@ -33,7 +33,7 @@ spring:
     host: smtp.gmail.com
     port: 587
     username: ${MAIL_ADDRESS_USERNAME:anontom90@gmail.com}
-    password: ${MAIL_APP_PASSWORD:byyp nttr zdjs dfxa}
+    password: ${MAIL_APP_PASSWORD:password}
     properties:
       mail:
         smtp:
@@ -65,7 +65,7 @@ spring:
 file:
   upload-dir: uploads
 app:
-  base-url: http://localhost:8080
+  base-url: ${APP_BASE_URL:http://localhost:8080}
 
 application:
   security:
@@ -83,7 +83,7 @@ application:
     name: ${ADMIN_NAME:System Super Admin}
 
 cors:
-  allowed-origins: "http://localhost:3000,http://localhost:4200"
+  allowed-origins: ${ALLOWED_ORIGINS:"*"}
   allowed-methods: "GET,POST,PUT,DELETE,PATCH,OPTIONS"
   allowed-headers: "*"
   exposed-headers: "Authorization"

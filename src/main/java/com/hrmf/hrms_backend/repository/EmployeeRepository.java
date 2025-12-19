@@ -27,6 +27,14 @@ public interface EmployeeRepository extends JpaRepository<Employee, UUID> {
     long countByEmployer(User employer);
     long countByEmployerAndUserStatus(User employer, UserStatus status);
 
+    @Query("SELECT e FROM Employee e WHERE e.user.email = :email")
+    Optional<Employee> findByUserEmail(@Param("email") String email);
+
+    Optional<Employee> findByUser(User user);
+
+    @Query("SELECT e FROM Employee e WHERE e.user = :user")
+    Optional<Employee> findByUserEntity(@Param("user") User user);
+
     @Query("SELECT e FROM Employee e WHERE e.employer = :employer AND " +
             "(LOWER(e.user.name) LIKE LOWER(CONCAT('%', :search, '%')) OR " +
             "LOWER(e.user.email) LIKE LOWER(CONCAT('%', :search, '%')))")
