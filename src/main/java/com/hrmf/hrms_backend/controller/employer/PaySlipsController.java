@@ -1,14 +1,18 @@
 package com.hrmf.hrms_backend.controller.employer;
 
 import com.hrmf.hrms_backend.dto.paySlip.CreatePaySlipe;
+import com.hrmf.hrms_backend.dto.paySlip.PaginationResponse;
 import com.hrmf.hrms_backend.dto.paySlip.ResponsePaySlipe;
+import com.hrmf.hrms_backend.dto.paySlip.UpdatePaySlipe;
 import com.hrmf.hrms_backend.service.PaySlipsService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
+
+import java.util.List;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/v1/employer/pay-slips")
@@ -18,14 +22,54 @@ public class PaySlipsController {
     private final PaySlipsService paySlipsService;
 
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<?> createPaySlipe (
+    public ResponseEntity<?> createPaySlipe(
             @Valid @ModelAttribute CreatePaySlipe paySlipe
-            ) {
-
+    ) {
         ResponsePaySlipe response = paySlipsService.createPaySlip(paySlipe);
-
         return ResponseEntity.ok(response);
     }
 
+    @GetMapping("/paginated")
+    public ResponseEntity<PaginationResponse<ResponsePaySlipe>> getPaySlipsPaginated(
+            @RequestParam(required = false) String monthYear,
+            @RequestParam(required = false) String department,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(defaultValue = "createdAt") String sortBy,
+            @RequestParam(defaultValue = "desc") String sortDirection
+    ) {
+        PaginationResponse<ResponsePaySlipe> response = paySlipsService.getPaySlipsByEmployer(
+                monthYear, department, page, size, sortBy, sortDirection);
+        return ResponseEntity.ok(response);
+    }
 
+    @GetMapping
+    public ResponseEntity<List<ResponsePaySlipe>> getPaySlips(
+            @RequestParam(required = false) String monthYear,
+            @RequestParam(required = false) String department
+    ) {
+        List<ResponsePaySlipe> response = paySlipsService.getPaySlipsByEmployer(monthYear, department);
+        return ResponseEntity.ok(response);
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<ResponsePaySlipe> getPaySlipById(@PathVariable UUID id) {
+        ResponsePaySlipe response = paySlipsService.getPaySlipById(id);
+        return ResponseEntity.ok(response);
+    }
+
+    @PutMapping(value = "/{id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<ResponsePaySlipe> updatePaySlip(
+            @PathVariable UUID id,
+            @Valid @ModelAttribute UpdatePaySlipe paySlipe
+    ) {
+        ResponsePaySlipe response = paySlipsService.updatePaySlip(id, paySlipe);
+        return ResponseEntity.ok(response);
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deletePaySlip(@PathVariable UUID id) {
+        paySlipsService.deletePaySlip(id);
+        return ResponseEntity.noContent().build();
+    }
 }
