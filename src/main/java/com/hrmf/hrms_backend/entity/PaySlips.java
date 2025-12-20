@@ -32,8 +32,9 @@ public class PaySlips {
     @Column(name = "employee_name")
     private String employeeName;
 
-    @Column(name = "employee_id")
-    private String employeeId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "employee_user", nullable = false)
+    private User employee;
 
     @Column(name = "job_category")
     private String jobCategory;
