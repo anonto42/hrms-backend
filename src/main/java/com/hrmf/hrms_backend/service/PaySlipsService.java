@@ -1,6 +1,7 @@
 package com.hrmf.hrms_backend.service;
 
 import com.hrmf.hrms_backend.dto.paySlip.CreatePaySlipe;
+import com.hrmf.hrms_backend.dto.paySlip.PaginationResponse;
 import com.hrmf.hrms_backend.dto.paySlip.ResponsePaySlipe;
 import com.hrmf.hrms_backend.dto.paySlip.UpdatePaySlipe;
 import com.hrmf.hrms_backend.entity.PaySlips;
@@ -8,15 +9,19 @@ import com.hrmf.hrms_backend.entity.User;
 import com.hrmf.hrms_backend.enums.UserRole;
 import com.hrmf.hrms_backend.exception.CustomException;
 import com.hrmf.hrms_backend.repository.PaySlipsRepository;
+import com.hrmf.hrms_backend.repository.UserRepository;
 import com.hrmf.hrms_backend.util.SecurityUtil;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.YearMonth;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
@@ -25,26 +30,31 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class PaySlipsService {
 
     private final PaySlipsRepository paySlipsRepository;
     private final SecurityUtil securityUtil;
     private final FileStorageService fileStorageService;
+    private final UserRepository userRepository;
 
-    // Employer endpoints
     @Transactional
     public ResponsePaySlipe createPaySlip(CreatePaySlipe paySlip) {
         User currentUser = securityUtil.getCurrentUserOrThrow();
 
+        // Find employee user by employeeId (string like "EMP001")
+        User employeeUser = userRepository.findById(UUID.fromString(paySlip.getUserId()))
+                .orElseThrow(() -> new CustomException("User not found with ID: " + paySlip.getUserId(), HttpStatus.NOT_FOUND));
+
+        // Handle image upload
         String folderPath = "pay-slip/" + currentUser.getId();
         String fileName = fileStorageService.storeFile(paySlip.getImage(), folderPath);
-
-        // Generate file URL
         String imageUrl = fileStorageService.getFileUrl(fileName, folderPath);
 
+        // Create new payslip
         PaySlips newPaySlip = new PaySlips();
         newPaySlip.setEmployeeName(paySlip.getEmployeeName());
-        newPaySlip.setEmployeeId(paySlip.getEmployeeId());
+        newPaySlip.setEmployee(employeeUser);
         newPaySlip.setJobCategory(paySlip.getJobCategory());
         newPaySlip.setTransactionDate(paySlip.getTransactionDate());
         newPaySlip.setAmount(paySlip.getAmount());
@@ -53,57 +63,72 @@ public class PaySlipsService {
         newPaySlip.setCreatedBy(currentUser);
 
         PaySlips saved = paySlipsRepository.save(newPaySlip);
+        log.info("Pay slip created for employee: {} by employer: {}",
+                paySlip.getUserId(), currentUser.getEmail());
+
         return convertToResponse(saved);
     }
 
     @Transactional(readOnly = true)
-    public List<ResponsePaySlipe> getPaySlipsByEmployer(String monthYear, String department) {
+    public PaginationResponse<ResponsePaySlipe> getPaySlipsByEmployer(
+            String monthYear,
+            String department,
+            String search,
+            int page,
+            int size,
+            String sortBy,
+            String sortDirection) {
+
         User currentUser = securityUtil.getCurrentUserOrThrow();
 
         if (!currentUser.getRole().equals(UserRole.EMPLOYER)) {
             throw new CustomException("Only employers can view all pay slips", HttpStatus.FORBIDDEN);
         }
 
-        List<PaySlips> paySlips;
+        Pageable pageable = createPageable(page, size, sortBy, sortDirection);
+        Page<PaySlips> paySlipsPage;
 
-        if (monthYear != null && !monthYear.isEmpty()) {
-            // Parse month-year (format: MM-yyyy)
+        if (search != null && !search.isEmpty()) {
+            paySlipsPage = paySlipsRepository.findByEmployeeNameContainingIgnoreCaseOrEmployee_IdContainingIgnoreCase(
+                    search, currentUser, pageable);
+        } else if (monthYear != null && !monthYear.isEmpty()) {
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM-yyyy");
             YearMonth yearMonth = YearMonth.parse(monthYear, formatter);
 
-            LocalDateTime startDate = yearMonth.atDay(1).atStartOfDay();
-            LocalDateTime endDate = yearMonth.atEndOfMonth().atTime(23, 59, 59);
+            LocalDate startDate = yearMonth.atDay(1);
+            LocalDate endDate = yearMonth.atEndOfMonth();
 
             if (department != null && !department.isEmpty()) {
-                // Filter by month-year and department
-                paySlips = paySlipsRepository.findByTransactionDateBetweenAndJobCategoryIgnoreCase(
-                        startDate, endDate, department);
+                paySlipsPage = paySlipsRepository.findByTransactionDateBetweenAndJobCategoryIgnoreCase(
+                        startDate, endDate, department, pageable);
             } else {
-                // Filter only by month-year
-                paySlips = paySlipsRepository.findByTransactionDateBetween(startDate, endDate);
+                paySlipsPage = paySlipsRepository.findByTransactionDateBetween(startDate, endDate, pageable);
             }
         } else if (department != null && !department.isEmpty()) {
-            // Filter only by department
-            paySlips = paySlipsRepository.findByJobCategoryIgnoreCase(department);
+            paySlipsPage = paySlipsRepository.findByJobCategoryIgnoreCase(department, pageable);
         } else {
-            // Get all payslips
-            paySlips = paySlipsRepository.findAll();
+            paySlipsPage = paySlipsRepository.findByCreatedBy(currentUser, pageable);
         }
 
-        return paySlips.stream()
-                .map(this::convertToResponse)
-                .collect(Collectors.toList());
+        return convertToPaginationResponse(paySlipsPage);
     }
 
     @Transactional(readOnly = true)
-    public ResponsePaySlipe getPaySlipById(UUID id) {
+    public List<ResponsePaySlipe> getPaySlipsByEmployer(String monthYear, String department) {
+        PaginationResponse<ResponsePaySlipe> paginatedResponse =
+                getPaySlipsByEmployer(monthYear, department, null, 0, Integer.MAX_VALUE, "createdAt", "desc");
+
+        return paginatedResponse.getContent();
+    }
+
+    @Transactional(readOnly = true)
+    public ResponsePaySlipe getPaySlipById(String id) {
         User currentUser = securityUtil.getCurrentUserOrThrow();
-        PaySlips paySlip = paySlipsRepository.findById(id)
+        PaySlips paySlip = paySlipsRepository.findById(UUID.fromString(id))
                 .orElseThrow(() -> new CustomException("Pay slip not found", HttpStatus.NOT_FOUND));
 
-        // Check permissions: employer can view any, employee can only view their own
         if (currentUser.getRole().equals(UserRole.EMPLOYEE)) {
-            if (!paySlip.getEmployeeId().equals("currentUser.getEmployeeId()")) {
+            if (!paySlip.getEmployee().getId().equals(currentUser.getId())) {
                 throw new CustomException("You can only view your own pay slips", HttpStatus.FORBIDDEN);
             }
         }
@@ -112,7 +137,7 @@ public class PaySlipsService {
     }
 
     @Transactional
-    public ResponsePaySlipe updatePaySlip(UUID id, UpdatePaySlipe paySlip, MultipartFile imageFile) {
+    public ResponsePaySlipe updatePaySlip(UUID id, UpdatePaySlipe paySlip) {
         User currentUser = securityUtil.getCurrentUserOrThrow();
 
         if (!currentUser.getRole().equals(UserRole.EMPLOYER)) {
@@ -122,44 +147,38 @@ public class PaySlipsService {
         PaySlips existingPaySlip = paySlipsRepository.findById(id)
                 .orElseThrow(() -> new CustomException("Pay slip not found", HttpStatus.NOT_FOUND));
 
-        // Handle image update
-        String imageUrl = existingPaySlip.getImage();
-        if (imageFile != null && !imageFile.isEmpty()) {
-            // Delete old image if exists
-            if (imageUrl != null) {
-//                fileStorageService.deleteFileByUrl(imageUrl);
-            }
-
-            // Upload new image
-            String folderPath = "pay-slips/" + existingPaySlip.getEmployeeId();
-            String fileName = fileStorageService.storeFile(imageFile, folderPath);
-            imageUrl = fileStorageService.getFileUrl(fileName, folderPath);
-        }
-
-        // Update fields if provided
-        if (paySlip.getEmployeeName() != null) {
-            existingPaySlip.setEmployeeName(paySlip.getEmployeeName());
-        }
-        if (paySlip.getEmployeeId() != null) {
-            existingPaySlip.setEmployeeId(paySlip.getEmployeeId());
-        }
-        if (paySlip.getJobCategory() != null) {
-            existingPaySlip.setJobCategory(paySlip.getJobCategory());
-        }
-        if (paySlip.getTransactionDate() != null) {
-            existingPaySlip.setTransactionDate(LocalDate.from(paySlip.getTransactionDate()));
-        }
-        if (paySlip.getAmount() != null) {
-            existingPaySlip.setAmount(paySlip.getAmount());
-        }
-        if (paySlip.getDescription() != null) {
-            existingPaySlip.setDescription(paySlip.getDescription());
-        }
-        if (imageUrl != null) {
+        if (paySlip.getImageFile() != null && !paySlip.getImageFile().isEmpty()) {
+            String folderPath = "pay-slips/" + currentUser.getId();
+            String fileName = fileStorageService.storeFile(paySlip.getImageFile(), folderPath);
+            String imageUrl = fileStorageService.getFileUrl(fileName, folderPath);
             existingPaySlip.setImage(imageUrl);
         }
 
+        if (paySlip.getEmployeeId() != null && !paySlip.getEmployeeId().isEmpty()) {
+            User employeeUser = userRepository.findById(UUID.fromString(paySlip.getEmployeeId()))
+                    .orElseThrow(() -> new CustomException("Employee not found with ID: " + paySlip.getEmployeeId(), HttpStatus.NOT_FOUND));
+            existingPaySlip.setEmployee(employeeUser);
+        }
+
+        if (paySlip.getEmployeeName() != null && !paySlip.getEmployeeName().trim().isEmpty()) {
+            existingPaySlip.setEmployeeName(paySlip.getEmployeeName().trim());
+        }
+        if (paySlip.getJobCategory() != null && !paySlip.getJobCategory().trim().isEmpty()) {
+            existingPaySlip.setJobCategory(paySlip.getJobCategory().trim());
+        }
+        if (paySlip.getTransactionDate() != null) {
+            existingPaySlip.setTransactionDate(paySlip.getTransactionDate());
+        }
+        if (paySlip.getAmount() != null && !paySlip.getAmount().trim().isEmpty()) {
+            existingPaySlip.setAmount(paySlip.getAmount().trim());
+        }
+        if (paySlip.getDescription() != null && !paySlip.getDescription().trim().isEmpty()) {
+            existingPaySlip.setDescription(paySlip.getDescription().trim());
+        }
+
         PaySlips updated = paySlipsRepository.save(existingPaySlip);
+        log.info("Pay slip updated: {} by employer: {}", id, currentUser.getEmail());
+
         return convertToResponse(updated);
     }
 
@@ -174,53 +193,78 @@ public class PaySlipsService {
         PaySlips paySlip = paySlipsRepository.findById(id)
                 .orElseThrow(() -> new CustomException("Pay slip not found", HttpStatus.NOT_FOUND));
 
-        // Delete image file if exists
-        if (paySlip.getImage() != null) {
-//            fileStorageService.deleteFileByUrl(paySlip.getImage());
-        }
-
         paySlipsRepository.delete(paySlip);
+        log.info("Pay slip deleted: {} by employer: {}", id, currentUser.getEmail());
     }
 
-    // Employee endpoints
     @Transactional(readOnly = true)
-    public List<ResponsePaySlipe> getEmployeePaySlips(String monthYear) {
+    public PaginationResponse<ResponsePaySlipe> getEmployeePaySlips(
+            String monthYear,
+            int page,
+            int size,
+            String sortBy,
+            String sortDirection
+    ) {
         User currentUser = securityUtil.getCurrentUserOrThrow();
 
         if (!currentUser.getRole().equals(UserRole.EMPLOYEE)) {
             throw new CustomException("This endpoint is for employees only", HttpStatus.FORBIDDEN);
         }
 
-        String employeeId = "currentUser.getEmployeeId()";
-        List<PaySlips> paySlips;
+        Pageable pageable = createPageable(page, size, sortBy, sortDirection);
+        Page<PaySlips> paySlipsPage;
 
         if (monthYear != null && !monthYear.isEmpty()) {
-            // Parse month-year (format: MM-yyyy)
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM-yyyy");
             YearMonth yearMonth = YearMonth.parse(monthYear, formatter);
 
-            LocalDateTime startDate = yearMonth.atDay(1).atStartOfDay();
-            LocalDateTime endDate = yearMonth.atEndOfMonth().atTime(23, 59, 59);
+            LocalDate startDate = yearMonth.atDay(1);
+            LocalDate endDate = yearMonth.atEndOfMonth();
 
-            paySlips = paySlipsRepository.findByEmployeeIdAndTransactionDateBetween(
-                    employeeId, startDate, endDate);
+            paySlipsPage = paySlipsRepository.findByEmployeeAndTransactionDateBetween(
+                    currentUser, startDate, endDate, pageable);
         } else {
-            // Get all pay slips for the employee
-            paySlips = paySlipsRepository.findByEmployeeId(employeeId);
+            paySlipsPage = paySlipsRepository.findByEmployee(currentUser, pageable);
         }
 
-        return paySlips.stream()
-                .map(this::convertToResponse)
-                .collect(Collectors.toList());
+        return convertToPaginationResponse(paySlipsPage);
     }
 
-    // Utility methods
+    private Pageable createPageable(int page, int size, String sortBy, String sortDirection) {
+        if (size <= 0) size = 10;
+        if (page < 0) page = 0;
+        if (sortBy == null || sortBy.isEmpty()) sortBy = "createdAt";
+        if (sortDirection == null || sortDirection.isEmpty()) sortDirection = "desc";
+
+        Sort sort = sortDirection.equalsIgnoreCase("asc")
+                ? Sort.by(sortBy).ascending()
+                : Sort.by(sortBy).descending();
+
+        return PageRequest.of(page, size, sort);
+    }
+
+    private PaginationResponse<ResponsePaySlipe> convertToPaginationResponse(Page<PaySlips> page) {
+        List<ResponsePaySlipe> content = page.getContent()
+                .stream()
+                .map(this::convertToResponse)
+                .collect(Collectors.toList());
+
+        return PaginationResponse.<ResponsePaySlipe>builder()
+                .content(content)
+                .pageNumber(page.getNumber())
+                .pageSize(page.getSize())
+                .totalElements(page.getTotalElements())
+                .totalPages(page.getTotalPages())
+                .last(page.isLast())
+                .build();
+    }
+
     private ResponsePaySlipe convertToResponse(PaySlips paySlip) {
         return ResponsePaySlipe.builder()
                 .id(paySlip.getId())
                 .image(paySlip.getImage())
                 .employeeName(paySlip.getEmployeeName())
-                .employeeId(paySlip.getEmployeeId())
+                .employeeId(paySlip.getEmployee() != null ? paySlip.getEmployee().getId().toString() : null)
                 .jobCategory(paySlip.getJobCategory())
                 .transactionDate(paySlip.getTransactionDate().atStartOfDay())
                 .amount(paySlip.getAmount())
