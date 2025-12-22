@@ -18,7 +18,7 @@ jobs:
 
     services:
       postgres:
-        image: postgres:16
+        image: postgres:latest
         env:
           POSTGRES_DB: pg_test_db
           POSTGRES_USER: pg_user_test
