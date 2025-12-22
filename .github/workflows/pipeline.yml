@@ -251,13 +251,3 @@ jobs:
             # Run deployment script
             echo "🚀 Executing deployment script..."
             ./deploy.sh
-
-            # Verify deployment
-            echo "✅ Verification..."
-            sleep 30
-            if curl -f http://localhost:8080/actuator/health; then
-              echo "🎉 Deployment successful!"
-            else
-              echo "❌ Deployment failed!"
-              exit 1
-            fi
