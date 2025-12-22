@@ -20,9 +20,9 @@ jobs:
       postgres:
         image: postgres:latest
         env:
-          POSTGRES_DB: pg_test_db
-          POSTGRES_USER: pg_user_test
-          POSTGRES_PASSWORD: pg_test_pass
+          POSTGRES_DB: testdb
+          POSTGRES_USER: testuser
+          POSTGRES_PASSWORD: testpass
         options: >-
           --health-cmd pg_isready
           --health-interval 10s
@@ -100,9 +100,9 @@ jobs:
         env:
           MAVEN_OPTS: "-Duser.home=${{ runner.temp }}"
           SPRING_PROFILES_ACTIVE: test
-          SPRING_DATASOURCE_URL: jdbc:postgresql://localhost:5432/pg_test_db
-          SPRING_DATASOURCE_USERNAME: pg_user_test
-          SPRING_DATASOURCE_PASSWORD: pg_test_pass
+          SPRING_DATASOURCE_URL: jdbc:postgresql://localhost:5432/testdb
+          SPRING_DATASOURCE_USERNAME: testuser
+          SPRING_DATASOURCE_PASSWORD: testpass
           SPRING_DATA_MONGODB_URI: mongodb://mongo_test_user:$mongo_test_pass@localhost:27017/test_db?authSource=admin
           MAIL_ADDRESS_USERNAME: test@email.test
           MAIL_APP_PASSWORD: test test test test
