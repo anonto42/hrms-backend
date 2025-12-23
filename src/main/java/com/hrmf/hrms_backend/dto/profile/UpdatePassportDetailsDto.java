@@ -28,4 +28,14 @@ public class UpdatePassportDetailsDto {
 
     @NotNull(message = "Is current field is required")
     private Boolean isCurrent;
+
+    // Getter
+    public MultipartFile[] getDocuments() {
+        return documents != null ? documents.clone() : null;
+    }
+
+    // Setter
+    public void setDocuments(MultipartFile[] documents) {
+        this.documents = documents != null ? documents.clone() : null;
+    }
 }

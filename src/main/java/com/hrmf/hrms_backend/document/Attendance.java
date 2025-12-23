@@ -58,12 +58,20 @@ public class Attendance {
     private String approvedBy;
     private LocalDateTime approvedAt;
     private String rejectionReason;
-
     @CreatedDate
     private LocalDateTime createdAt;
-
     @LastModifiedDate
     private LocalDateTime updatedAt;
+
+    // Getter
+    public ArrayList<BreakRecord> getBreaks() {
+        return breaks != null ? new ArrayList<>(breaks) : null;
+    }
+
+    // Setter
+    public void setBreaks(List<BreakRecord> breaks) {
+        this.breaks = breaks != null ? new ArrayList<BreakRecord>(breaks) : null;
+    }
 
     // Helper methods
     public boolean isCheckedIn() {

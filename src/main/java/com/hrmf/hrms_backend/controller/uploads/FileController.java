@@ -1,8 +1,7 @@
-package com.hrmf.hrms_backend.controller;
+package com.hrmf.hrms_backend.controller.uploads;
 
 import com.hrmf.hrms_backend.service.FileStorageService;
 import jakarta.servlet.http.HttpServletRequest;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
@@ -10,7 +9,9 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -20,11 +21,14 @@ import java.util.Arrays;
 
 @RestController
 @RequestMapping("/api/v1/files")
-@RequiredArgsConstructor
 @Slf4j
 public class FileController {
 
     private final FileStorageService fileStorageService;
+
+    public FileController(FileStorageService fileStorageService) {
+        this.fileStorageService = fileStorageService;
+    }
 
     @GetMapping("/download/**")
     public ResponseEntity<Resource> downloadFile(HttpServletRequest request) {
