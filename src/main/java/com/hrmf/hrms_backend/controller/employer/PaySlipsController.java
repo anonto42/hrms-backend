@@ -60,8 +60,8 @@ public class PaySlipsController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deletePaySlip(@PathVariable UUID id) {
+    public ResponseEntity<String> deletePaySlip(@PathVariable UUID id) {
         paySlipsService.deletePaySlip(id);
-        return ResponseEntity.noContent().build();
+        return ResponseEntity.ok("Successfully deleted");
     }
 }
