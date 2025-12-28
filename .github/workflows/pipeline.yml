@@ -186,8 +186,27 @@ jobs:
           envs: IMAGE_TAG
           script: |
             # Update the .env file with new image tag
-            cd ~/hrms-deployment
-
-            # Run deployment script
-            echo "🚀 Executing deployment script..."
-            ./deploy.sh
+            cd ~/application
+            
+            # Pull latest images
+            echo "📥 Pulling latest Docker images..."
+            docker compose pull hrms_backend:latest
+            
+            # Stop only the backend service
+            echo "⚙  Stopping backend service..."
+            docker compose stop hrms_backend
+            
+            # Remove old backend container
+            echo "🗑  Removing old backend container..."
+            docker compose rm -f hrms_backend
+            
+            # Start services
+            echo "🚀 Starting services with updated image..."
+            docker compose up -d
+            
+            echo "🧹 Cleaning up unused Docker images..."
+            docker image prune -f
+        
+            # Log deployment
+            echo "Deployed at $(date)" >> deploy.log
+            echo "Image: $(docker inspect --format='{{.Config.Image}}' hrms_backend)" >> deploy.log
