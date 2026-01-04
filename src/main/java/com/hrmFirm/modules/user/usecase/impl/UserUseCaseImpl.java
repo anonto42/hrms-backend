@@ -11,7 +11,6 @@ import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -28,7 +27,6 @@ public class UserUseCaseImpl implements
         GetUserByCreatorIdUseCase {
 
     private final UserRepositoryPort repository;
-    private final PasswordEncoder passwordEncoder;
 
     @Override
     public User create(CreateUserCommand command) {
@@ -41,7 +39,7 @@ public class UserUseCaseImpl implements
                 null,
                 command.name(),
                 command.email(),
-                passwordEncoder.encode(command.password()),
+                command.password(),
                 null,
                 command.role(),
                 UserStatus.ACTIVE,
@@ -56,10 +54,6 @@ public class UserUseCaseImpl implements
     @Override
     @Transactional
     public User update(UpdateUserCommand command) {
-
-        if(!command.getPassword().isBlank())
-            command.setPassword(passwordEncoder.encode(command.getPassword()));
-
         return repository.findAndUpdate(command)
                 .orElseThrow(() -> new CustomException("User not found", HttpStatus.NOT_FOUND));
     }
