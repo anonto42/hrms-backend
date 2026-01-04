@@ -1,16 +1,21 @@
+
+### Spring ###
+application*.yml
+application*.yaml
+application*.properties
+!application-*.yml
+!application-*.yaml
+!application-*.properties
+
+### Java ###
 # Compiled class file
 *.class
 
 # Log file
 *.log
 
-# env
-.env
-.env.local
-
 # BlueJ files
 *.ctxt
-.idea
 
 # Mobile Tools for Java (J2ME)
 .mtj.tmp/
@@ -24,12 +29,242 @@
 *.tar.gz
 *.rar
 
-target/**
-uploads/**
-.vscode/
-*.iml
-*.log
-
 # virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
 hs_err_pid*
-replay_pid*
+
+### Eclipse ###
+.metadata
+bin/
+tmp/
+*.tmp
+*.bak
+*.swp
+*~.nib
+local.properties
+.settings/
+.loadpath
+.recommenders
+
+# External tool builders
+.externalToolBuilders/
+
+# Locally stored
+*.launch
+
+# PyDev specific
+*.pydevproject
+
+# CDT-specific
+.cproject
+
+# Java annotation processor
+.factorypath
+
+# PDT-specific
+.buildpath
+
+# sbteclipse plugin
+.target
+
+# Tern plugin
+.tern-project
+
+# TeXlipse plugin
+.texlipse
+
+# STS (Spring Tool Suite)
+.springBeans
+
+# Code Recommenders
+.recommenders/
+
+# Scala IDE specific (Scala & Java development for Eclipse)
+.cache-main
+.scala_dependencies
+.worksheet
+
+### Intellij ###
+
+# User-specific stuff
+.idea/**/workspace.xml
+.idea/**/tasks.xml
+.idea/**/usage.statistics.xml
+.idea/**/dictionaries
+.idea/**/shelf
+
+# AWS User-specific
+.idea/**/aws.xml
+
+# Generated files
+.idea/**/contentModel.xml
+
+# Sensitive or high-churn files
+.idea/**/dataSources/
+.idea/**/dataSources.ids
+.idea/**/dataSources.local.xml
+.idea/**/sqlDataSources.xml
+.idea/**/dynamic.xml
+.idea/**/uiDesigner.xml
+.idea/**/dbnavigator.xml
+
+# Gradle
+.idea/**/gradle.xml
+.idea/**/libraries
+
+# Gradle and Maven
+ auto-import.
+ .idea/artifacts
+ .idea/compiler.xml
+ .idea/modules.xml
+ .idea/*.iml
+ .idea/modules
+ *.iml
+ *.ipr
+
+# CMake
+cmake-build-*/
+
+# Mongo Explorer plugin
+.idea/**/mongoSettings.xml
+
+# File-based project format
+*.iws
+
+# IntelliJ
+out/
+
+# mpeltonen/sbt-idea plugin
+.idea_modules/
+
+# JIRA plugin
+atlassian-ide-plugin.xml
+
+# Cursive Clojure plugin
+.idea/replstate.xml
+
+# SonarLint plugin
+.idea/sonarlint/
+
+# Crashlytics plugin
+com_crashlytics_export_strings.xml
+crashlytics.properties
+crashlytics-build.properties
+fabric.properties
+
+# Editor-based Rest Client
+.idea/httpRequests
+
+# Android studio 3.1+ serialized cache file
+.idea/caches/build_file_checksums.ser
+
+### Intellij Patch ###
+
+# *.iml
+modules.xml
+.idea/misc.xml
+*.ipr
+
+# Sonarlint plugin
+.idea/**/sonarlint/
+
+# SonarQube Plugin
+.idea/**/sonarIssues.xml
+
+# Checkstyle plugin
+.idea/**/checkstyle.xml
+
+# PMD Plugin
+.idea/**/pmd.xml
+
+# Additional root directories
+.project
+.classpath
+.c9/
+*.launch
+.settings/
+
+### Gradle ###
+.gradle
+**/build/
+!gradle/wrapper/gradle-wrapper.jar
+!**/src/main/**/build/
+!**/src/test/**/build/
+
+# Ignore Gradle GUI config
+gradle-app.setting
+
+# Avoid ignoring Gradle wrapper jar file
+!gradle/wrapper/gradle-wrapper.jar
+
+# Avoid ignore Gradle wrappers
+!gradle/wrapper/gradle-wrapper.properties
+
+# Cache of project
+.gradletasknamecache
+
+### Gradle Patch ###
+**/build/
+
+### Application Specific ###
+# Environment variables
+.env
+.env.local
+.env.*.local
+!.env.sample
+
+# Local development override files
+application-local.yml
+application-local.properties
+
+# Docker
+docker-compose.override.yml
+
+# Logs
+logs/
+*.log.*
+log/
+*.log
+
+# Temp files
+temp/
+tmp/
+
+# IDE specific
+.vscode/
+*.swp
+*.swo
+*~
+
+# OS specific
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Database files (if using local DB)
+*.db
+*.sqlite
+*.h2.db
+
+# Uploads directory (if any)
+uploads/
+files/
+
+# Node modules
+node_modules/
+
+# Frontend build
+dist/
+build/
+
+# Coverage reports
+coverage/
+*.cover
+htmlcov/
+
+# Profiling
+*.prof
+*.profdata
