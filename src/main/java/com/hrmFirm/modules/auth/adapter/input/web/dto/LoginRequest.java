@@ -19,7 +19,7 @@ public record LoginRequest(
         )
         String password
 ) {
-    public LoginCommand toCommand() {
-        return new LoginCommand(email, password);
+    public static LoginCommand toCommand(LoginRequest request) {
+        return new LoginCommand(request.email(), request.password());
     }
 }
