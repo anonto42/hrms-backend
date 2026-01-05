@@ -36,7 +36,12 @@ public class JwtTokenProviderAdapter implements TokenProviderPort {
     public AuthToken generateToken(AuthUser user) {
         Map<String, Object> claims = new HashMap<>();
         claims.put("role", user.role());
-        claims.put("userId", user.id().toString());
+
+        String id = null;
+
+        if(user.id() != null)
+            id = user.id().toString();
+        claims.put("userId", id);
 
         String accessToken = Jwts.builder()
                 .setClaims(claims)
