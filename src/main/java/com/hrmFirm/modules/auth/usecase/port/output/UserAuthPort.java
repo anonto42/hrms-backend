@@ -6,4 +6,6 @@ import java.util.Optional;
 
 public interface UserAuthPort {
     Optional<AuthUser> findByEmail(String email);
+    AuthUser save(AuthUser user);
+    boolean existsByEmail(String email);
 }
