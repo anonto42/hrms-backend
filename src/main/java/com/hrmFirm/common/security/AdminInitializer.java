@@ -46,7 +46,6 @@ public class AdminInitializer {
                 userAuthPort.save(superAdmin);
 
                 log.info("✅ Super admin created successfully!");
-                printAdminCredentials();
 
             } catch (Exception e) {
                 log.error("❌ Failed to create super admin: {}", e.getMessage(), e);
@@ -54,16 +53,5 @@ public class AdminInitializer {
         } else {
             log.info("✅ Super admin already exists: {}", adminEmail);
         }
-    }
-
-    private void printAdminCredentials() {
-        log.info("================================================");
-        log.info("SUPER ADMIN CREDENTIALS");
-        log.info("================================================");
-        log.info("Email:    {}", adminProperties.getEmail());
-        log.info("Password: {}", adminProperties.getPassword());
-        log.info("================================================");
-        log.info("⚠️  IMPORTANT: Change this password immediately!");
-        log.info("================================================");
     }
 }
