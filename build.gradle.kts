@@ -42,7 +42,10 @@ dependencies {
 
 	// Email & Mail Support
 	implementation("org.springframework.boot:spring-boot-starter-mail")
-//	implementation("com.sun.mail:jakarta.mail:2.1.3")
+
+	// Redis
+	implementation("org.springframework.boot:spring-boot-starter-data-redis")
+	implementation("org.apache.commons:commons-pool2")
 
 	// Thymeleaf for Email Templates
 	implementation("org.springframework.boot:spring-boot-starter-thymeleaf")
