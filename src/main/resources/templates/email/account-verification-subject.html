@@ -1,0 +1,408 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Verify Your Account - HRMS</title>
+    <style>
+        /* Base Styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+            line-height: 1.6;
+            color: #333333;
+            background-color: #f5f7fa;
+            margin: 0;
+            padding: 20px;
+        }
+
+        .email-container {
+            max-width: 600px;
+            margin: 0 auto;
+            background-color: #ffffff;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Header */
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 40px 30px;
+            text-align: center;
+        }
+
+        .logo {
+            width: 80px;
+            height: 80px;
+            margin: 0 auto 20px;
+            background-color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 32px;
+            color: #667eea;
+            font-weight: bold;
+        }
+
+        .header h1 {
+            font-size: 28px;
+            font-weight: 600;
+            margin-bottom: 10px;
+            letter-spacing: -0.5px;
+        }
+
+        .header p {
+            font-size: 16px;
+            opacity: 0.9;
+        }
+
+        /* Content */
+        .content {
+            padding: 40px 30px;
+        }
+
+        .greeting {
+            font-size: 24px;
+            font-weight: 600;
+            margin-bottom: 20px;
+            color: #2d3748;
+        }
+
+        .greeting .name {
+            color: #667eea;
+        }
+
+        .message {
+            font-size: 16px;
+            color: #4a5568;
+            margin-bottom: 25px;
+            line-height: 1.7;
+        }
+
+        .highlight {
+            background-color: #f7f9fc;
+            border-left: 4px solid #667eea;
+            padding: 20px;
+            margin: 30px 0;
+            border-radius: 0 8px 8px 0;
+        }
+
+        .highlight p {
+            margin-bottom: 10px;
+        }
+
+        /* Verification Button */
+        .verification-container {
+            text-align: center;
+            margin: 40px 0;
+            padding: 30px;
+            background: linear-gradient(135deg, #f6f8ff 0%, #f0f2ff 100%);
+            border-radius: 12px;
+            border: 2px dashed #c3dafe;
+        }
+
+        .verification-button {
+            display: inline-block;
+            padding: 18px 42px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            text-decoration: none;
+            font-size: 18px;
+            font-weight: 600;
+            border-radius: 50px;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+            transition: all 0.3s ease;
+            letter-spacing: 0.5px;
+        }
+
+        .verification-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.6);
+        }
+
+        .verification-note {
+            margin-top: 20px;
+            font-size: 14px;
+            color: #718096;
+            line-height: 1.5;
+        }
+
+        /* Important Info */
+        .important-info {
+            background-color: #fffaf0;
+            border: 1px solid #fed7d7;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 30px 0;
+        }
+
+        .important-info h3 {
+            color: #c53030;
+            font-size: 18px;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .info-icon {
+            font-size: 20px;
+        }
+
+        .info-list {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        .info-list li {
+            padding: 8px 0;
+            position: relative;
+            padding-left: 24px;
+        }
+
+        .info-list li:before {
+            content: "•";
+            color: #667eea;
+            font-weight: bold;
+            position: absolute;
+            left: 0;
+        }
+
+        /* Verification Link (Fallback) */
+        .link-fallback {
+            background-color: #edf2f7;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 20px 0;
+            word-break: break-all;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+            color: #2d3748;
+        }
+
+        /* Expiry Warning */
+        .expiry-warning {
+            background-color: #fff5f5;
+            border: 1px solid #fc8181;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 30px 0;
+            text-align: center;
+        }
+
+        .expiry-warning h3 {
+            color: #c53030;
+            font-size: 18px;
+            margin-bottom: 10px;
+        }
+
+        .timer {
+            font-size: 20px;
+            font-weight: bold;
+            color: #c53030;
+            margin: 10px 0;
+        }
+
+        /* Footer */
+        .footer {
+            background-color: #2d3748;
+            color: #cbd5e0;
+            padding: 30px;
+            text-align: center;
+            font-size: 14px;
+        }
+
+        .support-info {
+            margin-bottom: 20px;
+        }
+
+        .support-link {
+            color: #90cdf4;
+            text-decoration: none;
+        }
+
+        .support-link:hover {
+            text-decoration: underline;
+        }
+
+        .social-links {
+            margin: 20px 0;
+        }
+
+        .social-icon {
+            display: inline-block;
+            width: 36px;
+            height: 36px;
+            background-color: #4a5568;
+            border-radius: 50%;
+            margin: 0 8px;
+            text-align: center;
+            line-height: 36px;
+            color: white;
+            text-decoration: none;
+            transition: background-color 0.3s;
+        }
+
+        .social-icon:hover {
+            background-color: #667eea;
+        }
+
+        .copyright {
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 1px solid #4a5568;
+            font-size: 12px;
+            color: #a0aec0;
+        }
+
+        /* Responsive */
+        @media (max-width: 600px) {
+            .email-container {
+                border-radius: 0;
+                box-shadow: none;
+            }
+
+            .header {
+                padding: 30px 20px;
+            }
+
+            .header h1 {
+                font-size: 24px;
+            }
+
+            .content {
+                padding: 30px 20px;
+            }
+
+            .verification-button {
+                padding: 16px 32px;
+                font-size: 16px;
+            }
+
+            .link-fallback {
+                font-size: 12px;
+            }
+        }
+    </style>
+</head>
+<body>
+<div class="email-container">
+    <!-- Header -->
+    <div class="header">
+        <div class="logo">HRMS</div>
+        <h1>Welcome to HRMS!</h1>
+        <p>Your journey to better HR management starts here</p>
+    </div>
+
+    <!-- Content -->
+    <div class="content">
+        <!-- Greeting -->
+        <h2 class="greeting">Hello <span class="name" th:text="${name}">Valued User</span>,</h2>
+
+        <!-- Welcome Message -->
+        <div class="message">
+            <p>Thank you for registering with <strong>HR Management System (HRMS)</strong>! We're excited to have you on board.</p>
+            <p>To complete your registration and start using all the features of HRMS, please verify your email address by clicking the button below:</p>
+        </div>
+
+        <!-- Verification Section -->
+        <div class="verification-container">
+            <p class="verification-note">Click this button to verify your account:</p>
+            <a th:href="${verificationUrl}" class="verification-button">
+                ✅ Verify My Account
+            </a>
+            <p class="verification-note">
+                This link will verify your email and activate your HRMS account.
+            </p>
+        </div>
+
+        <!-- Link Fallback -->
+        <div class="message">
+            <p><strong>If the button doesn't work</strong>, copy and paste the following link into your browser:</p>
+            <div class="link-fallback" th:text="${verificationUrl}">
+                https://your-hrms.com/verify?token=abc123
+            </div>
+        </div>
+
+        <!-- Important Information -->
+        <div class="important-info">
+            <h3><span class="info-icon">⚠️</span> Important Information</h3>
+            <ul class="info-list">
+                <li><strong>One-time use:</strong> This verification link can only be used once</li>
+                <li><strong>Account security:</strong> Never share your verification link with anyone</li>
+                <li><strong>Complete setup:</strong> After verification, you'll be prompted to complete your profile</li>
+                <li><strong>Access features:</strong> Verification is required to access all HRMS features</li>
+            </ul>
+        </div>
+
+        <!-- Expiry Warning -->
+        <div class="expiry-warning">
+            <h3>⏰ Verification Link Expires Soon!</h3>
+            <p>This verification link is only valid for:</p>
+            <div class="timer" th:text="${expiryHours} + ' hours'">24 hours</div>
+            <p>After this period, you'll need to request a new verification email.</p>
+        </div>
+
+        <!-- Next Steps -->
+        <div class="highlight">
+            <h3>🎯 What's Next?</h3>
+            <p>Once your account is verified, you can:</p>
+            <ul class="info-list">
+                <li>Complete your employee profile</li>
+                <li>Access the employee dashboard</li>
+                <li>Submit leave requests</li>
+                <li>View payslips and documents</li>
+                <li>Update personal information</li>
+            </ul>
+        </div>
+
+        <!-- Support Info -->
+        <div class="message">
+            <p><strong>Having trouble?</strong> If you're experiencing issues with verification or have any questions, our support team is here to help!</p>
+            <p>Contact us at:
+                <a th:href="'mailto:' + ${supportEmail}" th:text="${supportEmail}">support@hrmfirm.com</a>
+            </p>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <div class="footer">
+        <div class="support-info">
+            <p>Need help? We're here for you!</p>
+            <p>
+                📧 <a th:href="'mailto:' + ${supportEmail}" class="support-link" th:text="${supportEmail}">support@hrmfirm.com</a> |
+                📞 <span th:text="${supportPhone}">+1 (555) 123-4567</span>
+            </p>
+        </div>
+
+        <div class="social-links">
+            <a href="https://twitter.com/hrmfirm" class="social-icon">𝕏</a>
+            <a href="https://linkedin.com/company/hrmfirm" class="social-icon">in</a>
+            <a href="https://facebook.com/hrmfirm" class="social-icon">f</a>
+            <a href="https://instagram.com/hrmfirm" class="social-icon">ig</a>
+        </div>
+
+        <div class="copyright">
+            <p>© <span th:text="${#dates.format(#dates.createNow(), 'yyyy')}">2024</span> HR Management System (HRMS). All rights reserved.</p>
+            <p>This email was sent to <span th:text="${email}">user@example.com</span> as part of your HRMS registration.</p>
+            <p>
+                <a href="https://hrmfirm.com/privacy" style="color: #90cdf4; text-decoration: none;">Privacy Policy</a> |
+                <a href="https://hrmfirm.com/terms" style="color: #90cdf4; text-decoration: none;">Terms of Service</a>
+            </p>
+            <p style="margin-top: 10px; font-size: 11px; color: #718096;">
+                If you didn't create an account with HRMS, please ignore this email or
+                <a href="https://hrmfirm.com/unsubscribe" style="color: #90cdf4;">contact us</a> immediately.
+            </p>
+        </div>
+    </div>
+</div>
+</body>
+</html>
