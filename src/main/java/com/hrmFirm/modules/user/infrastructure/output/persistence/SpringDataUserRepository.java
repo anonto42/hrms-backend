@@ -1,6 +1,6 @@
-package com.hrmFirm.modules.user.adapter.output.persistence;
+package com.hrmFirm.modules.user.infrastructure.output.persistence;
 
-import com.hrmFirm.modules.user.adapter.output.persistence.entity.UserEntity;
+import com.hrmFirm.modules.user.infrastructure.output.persistence.entity.UserEntity;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;

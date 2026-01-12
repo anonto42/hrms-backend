@@ -1,8 +1,8 @@
-package com.hrmFirm.modules.user.adapter.output.persistence;
+package com.hrmFirm.modules.user.infrastructure.output.persistence;
 
 import com.hrmFirm.common.exception.CustomException;
-import com.hrmFirm.modules.user.adapter.output.persistence.entity.UserEntity;
-import com.hrmFirm.modules.user.adapter.output.persistence.mapper.UserPersistenceMapper;
+import com.hrmFirm.modules.user.infrastructure.output.persistence.entity.UserEntity;
+import com.hrmFirm.modules.user.infrastructure.output.persistence.mapper.UserPersistenceMapper;
 import com.hrmFirm.modules.user.domain.User;
 import com.hrmFirm.modules.user.usecase.port.command.UpdateUserCommand;
 import com.hrmFirm.modules.user.usecase.port.output.UserRepositoryPort;

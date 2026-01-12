@@ -1,4 +1,4 @@
-package com.hrmFirm.modules.user.adapter.output.persistence.entity;
+package com.hrmFirm.modules.user.infrastructure.output.persistence.entity;
 
 import com.hrmFirm.common.enums.UserRole;
 import com.hrmFirm.common.enums.UserStatus;
