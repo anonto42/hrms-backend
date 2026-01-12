@@ -5,7 +5,7 @@ import com.hrmFirm.modules.auth.domain.AuthTempUser;
 import com.hrmFirm.modules.auth.infrastructure.output.mapper.TempUserMapper;
 import com.hrmFirm.modules.auth.usecase.port.output.TempUserPort;
 import com.hrmFirm.modules.tempUser.usecase.port.input.CreateTempUserUseCase;
-import com.hrmFirm.modules.tempUser.usecase.port.input.DeleteUserUseCase;
+import com.hrmFirm.modules.tempUser.usecase.port.input.DeleteTempUserUseCase;
 import com.hrmFirm.modules.tempUser.usecase.port.input.GetTempUserUseCase;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -20,7 +20,7 @@ public class TempUserAdapter
 
     private final CreateTempUserUseCase createTempUserUseCase;
     private final GetTempUserUseCase getTempUserUseCase;
-    private final DeleteUserUseCase deleteUserUseCase;
+    private final DeleteTempUserUseCase deleteUserUseCase;
 
     @Override
     public AuthTempUser save(AuthTempUser user) {
