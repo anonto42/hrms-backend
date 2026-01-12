@@ -7,13 +7,13 @@ import org.springframework.stereotype.Service;
 
 @Service
 @AllArgsConstructor
-public class DeleteTempUserImp
+public class DeleteTempUserImpl
         implements DeleteTempUserUseCase {
 
     private final TempUserRepositoryPort tempUserRepositoryPort;
 
     @Override
     public void delete(String email) {
-
+        tempUserRepositoryPort.delete(email);
     }
 }
