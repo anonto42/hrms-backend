@@ -1,4 +1,4 @@
-package com.hrmFirm.common.properties;
+package com.hrmFirm.modules.notification.infrastructure.properties;
 
 import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
@@ -27,6 +27,7 @@ public class EmailProperties {
     private String passwordResetConfirmSubject;
     private String passwordChangeConfirmSubject;
     private String welcomeSubject;
+    private String verifyAccountSubject;
 
     // Email settings
     private boolean asyncEnabled = true;
