@@ -2,7 +2,7 @@ package com.hrmFirm.common.filter;
 
 import com.hrmFirm.common.config.CorsConfig;
 import com.hrmFirm.common.enums.UserRole;
-import com.hrmFirm.common.security.AuthenticationProviderConfig;
+import com.hrmFirm.common.config.AuthenticationProviderConfig;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
