@@ -1,7 +1,7 @@
-package com.hrmFirm.modules.auth.adapter.output.mapper;
+package com.hrmFirm.modules.auth.infrastructure.output.mapper;
 
 import com.hrmFirm.modules.auth.domain.AuthUser;
-import com.hrmFirm.modules.user.adapter.output.persistence.entity.UserEntity;
+import com.hrmFirm.modules.user.infrastructure.output.persistence.entity.UserEntity;
 
 import java.util.UUID;
 
