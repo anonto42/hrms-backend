@@ -1,4 +1,4 @@
-package com.hrmFirm.modules.auth.adapter.output.security;
+package com.hrmFirm.modules.auth.infrastructure.output.security;
 
 import com.hrmFirm.modules.auth.domain.AuthToken;
 import com.hrmFirm.modules.auth.domain.AuthUser;
