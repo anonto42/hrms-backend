@@ -1,6 +1,6 @@
-package com.hrmFirm.modules.user.adapter.output.persistence.mapper;
+package com.hrmFirm.modules.user.infrastructure.output.persistence.mapper;
 
-import com.hrmFirm.modules.user.adapter.output.persistence.entity.UserEntity;
+import com.hrmFirm.modules.user.infrastructure.output.persistence.entity.UserEntity;
 import com.hrmFirm.modules.user.domain.User;
 import org.springframework.stereotype.Component;
 
