@@ -1,9 +1,11 @@
 package com.hrmFirm.modules.tempUser.infrastructure.output.persistence;
 
+import com.hrmFirm.common.exception.CustomException;
 import com.hrmFirm.modules.tempUser.domain.TempUser;
 import com.hrmFirm.modules.tempUser.infrastructure.output.persistence.mapper.TempUserMapper;
 import com.hrmFirm.modules.tempUser.usecase.port.output.TempUserRepositoryPort;
 import lombok.AllArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -34,7 +36,7 @@ public class JpaTempUserRepositoryAdapter implements TempUserRepositoryPort {
                 .delete(
                     repository
                             .findByEmail(email)
-                                .orElseThrow()
+                                .orElseThrow(()-> new CustomException("User not found to delete form temp DB", HttpStatus.NOT_FOUND))
                 );
     }
 
