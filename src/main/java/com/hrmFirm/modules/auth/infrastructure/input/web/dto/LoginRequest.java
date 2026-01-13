@@ -1,4 +1,4 @@
-package com.hrmFirm.modules.auth.adapter.input.web.dto;
+package com.hrmFirm.modules.auth.infrastructure.input.web.dto;
 
 import com.hrmFirm.common.validation.ValidationPatterns;
 import com.hrmFirm.modules.auth.usecase.port.command.LoginCommand;
