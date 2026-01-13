@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Collections;
+import java.util.UUID;
 
 @Slf4j
 @Service
@@ -24,22 +25,37 @@ public class CustomUserDetailsService implements UserDetailsService {
     @Override
     @Transactional(readOnly = true)
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-        log.debug("Loading user by email: {}", email);
 
         UserEntity user = userRepository.findByEmail(email.toLowerCase().trim())
-                .orElseThrow(() -> {
-                    log.warn("User not found with email: {}", email);
-                    return new UsernameNotFoundException("User not found with email: " + email);
-                });
+                .orElseThrow(() ->  new UsernameNotFoundException("User not found with email: " + email));
 
-        log.debug("Found user: {} with role: {}", user.getEmail(), user.getRole());
+        return buildUserDetails(user);
+    }
+
+    @Transactional(readOnly = true)
+    public UserDetails loadUserById(UUID userId) {
+
+        UserEntity user = userRepository
+                .findById(userId)
+                .orElseThrow(() ->
+                        new UsernameNotFoundException(
+                                "User not found with id: " + userId
+                        )
+                );
+
+        return buildUserDetails(user);
+    }
+
+    private UserDetails buildUserDetails(UserEntity user) {
 
         return CustomUserDetails.builder()
                 .user(user)
                 .username(user.getEmail())
                 .password(user.getPassword())
                 .authorities(Collections.singletonList(
-                        new SimpleGrantedAuthority("ROLE_" + user.getRole().name())
+                        new SimpleGrantedAuthority(
+                                "ROLE_" + user.getRole().name()
+                        )
                 ))
                 .enabled(isAccountActive(user.getStatus()))
                 .accountNonExpired(isAccountNonExpired(user.getStatus()))

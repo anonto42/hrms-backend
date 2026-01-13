@@ -10,6 +10,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
 import javax.crypto.SecretKey;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -56,6 +57,15 @@ public class JwtTokenProvider {
     public String generateRefreshToken(Authentication authentication) {
         UserDetails userDetails = (UserDetails) authentication.getPrincipal();
         return buildToken(new HashMap<>(), userDetails.getUsername(), refreshTokenExpirationMs);
+    }
+
+    public String generateRefreshToken(UserDetails userDetails) {
+
+        return buildToken(
+                Collections.emptyMap(),
+                userDetails.getUsername(),
+                refreshTokenExpirationMs
+        );
     }
 
     private String buildToken(

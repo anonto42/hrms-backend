@@ -35,7 +35,10 @@ public class SecurityChainFilter {
                 .authorizeHttpRequests(auth -> auth
                         // Public endpoints
                         .requestMatchers(
-                                "/api/v1/auth/**",
+                                "/api/v1/auth/sign-in",
+                                "/api/v1/auth/refresh",
+                                "/api/v1/auth/verify-account/**",
+                                "/api/v1/auth/signup",
                                 "/swagger-ui/**",
                                 "/v3/api-docs/**",
                                 "/actuator/health"
