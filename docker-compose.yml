@@ -39,6 +39,9 @@ services:
 #      --wiredTigerCacheSizeGB 1
 
   hrms_backend:
+#    build:
+#      context: .
+#      dockerfile: Dockerfile
     image: ${DOCKER_IMAGE:-anonto/hrms-backend:latest}
     container_name: hrms_backend
     restart: unless-stopped
