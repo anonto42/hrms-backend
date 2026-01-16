@@ -186,10 +186,8 @@ jobs:
           tags: |
             anonto/hrms-backend:latest
             anonto/hrms-backend:${{ env.VERSION }}
-            anonto/hrms-backend:${{ github.sha }}
           labels: |
             org.opencontainers.image.version=${{ env.VERSION }}
-            org.opencontainers.image.revision=${{ github.sha }}
             cache-from: type=gha
             cache-to: type=gha,mode=max
 
