@@ -1,0 +1,14 @@
+.gradle
+build
+gradle
+out
+*.log
+.git
+.gitignore
+**/*.swp
+**/*.swo
+**/.DS_Store
+Dockerfile
+.dockerignore
+.env
+README.md
