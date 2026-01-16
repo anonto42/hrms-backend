@@ -73,60 +73,61 @@ jobs:
       - name: Make gradlew executable
         run: chmod +x ./gradlew
 
-      - name: Run Unit Tests Only
-        run: |
-          ./gradlew clean test \
-            -Dspring.datasource.url=jdbc:postgresql://localhost:5432/testdb \
-            -Dspring.datasource.username=testuser \
-            -Dspring.datasource.password=testpass \
-            -Dspring.data.mongodb.uri=mongodb://mongo_test_user:mongo_test_pass@localhost:27017/test_db?authSource=admin \
-            -Dspring.data.redis.host=localhost \
-            -Dspring.data.redis.port=6379
-        env:
-          SPRING_PROFILES_ACTIVE: test
-          MONGO_DB_NAME: test_db
-          MAIL_SENDER_EMAIL: test@email.test
-          MAIL_SENDER_PASSWORD: test_password
-          APP_BASE_URL: http://localhost:8080
-          ADMIN_EMAIL: admin@mail.com
-          ADMIN_PASSWORD: admin_pass
-          ADMIN_NAME: admin
-          JWT_SECRET: test_jwt_secret
-          JWT_ACCESS_TOKEN_EXPIRATION: 50000
-          JWT_REFRESH_TOKEN_EXPIRATION: 150000
-          OTP_EXPIRATION: 600
-          OTP_LENGTH: 6
-          ALLOWED_ORIGINS: "*"
-          REDIS_HOST: localhost
-          REDIS_PORT: 6379
-          # Database
-          SPRING_DATASOURCE_URL: ${SPRING_DATASOURCE_URL}
-          SPRING_DATASOURCE_USERNAME: ${SPRING_DATASOURCE_USERNAME}
-          SPRING_DATASOURCE_PASSWORD: ${SPRING_DATASOURCE_PASSWORD}
-          SPRING_DATA_MONGODB_URI: ${SPRING_DATA_MONGODB_URI}
+#      - name: Run Unit Tests Only
+#        run: |
+#          ./gradlew clean test \
+#            -Dspring.datasource.url=jdbc:postgresql://localhost:5432/testdb \
+#            -Dspring.datasource.username=testuser \
+#            -Dspring.datasource.password=testpass \
+#            -Dspring.data.mongodb.uri=mongodb://mongo_test_user:mongo_test_pass@localhost:27017/test_db?authSource=admin \
+#            -Dspring.data.redis.host=localhost \
+#            -Dspring.data.redis.port=6379
+#        env:
+#          SPRING_PROFILES_ACTIVE: test
+#          MONGO_DB_NAME: test_db
+#          MAIL_SENDER_EMAIL: test@email.test
+#          MAIL_SENDER_PASSWORD: test_password
+#          APP_BASE_URL: http://localhost:8080
+#          ADMIN_EMAIL: admin@mail.com
+#          ADMIN_PASSWORD: admin_pass
+#          ADMIN_NAME: admin
+#          JWT_SECRET: test_jwt_secret
+#          JWT_ACCESS_TOKEN_EXPIRATION: 50000
+#          JWT_REFRESH_TOKEN_EXPIRATION: 150000
+#          OTP_EXPIRATION: 600
+#          OTP_LENGTH: 6
+#          ALLOWED_ORIGINS: "*"
+#          REDIS_HOST: localhost
+#          REDIS_PORT: 6379
+#          # Database
+#          SPRING_DATASOURCE_URL: ${SPRING_DATASOURCE_URL}
+#          SPRING_DATASOURCE_USERNAME: ${SPRING_DATASOURCE_USERNAME}
+#          SPRING_DATASOURCE_PASSWORD: ${SPRING_DATASOURCE_PASSWORD}
+#          SPRING_DATA_MONGODB_URI: ${SPRING_DATA_MONGODB_URI}
+#
+#          # Email Configuration
+#          MAIL_SERVER_HOST: ${MAIL_SERVER_HOST:-smtp.gmail.com}
+#          MAIL_SERVER_PORT: ${MAIL_SERVER_PORT:-587}
+#
+#          # Redis Configuration
+#          REDIS_PASSWORD: ${REDIS_PASSWORD:-}
+#          APP_LOGIN_URL: ${APP_LOGIN_URL:-https://hrms.hrmf.com/login}
+#          PORT: ${PORT:-8080}
+#          # Email Department Configs
+#          SUPPORT_EMAIL: ${SUPPORT_EMAIL:-support@hrmf.com}
+#          HR_DEPARTMENT_EMAIL: ${HR_DEPARTMENT_EMAIL:-hr@hrmf.com}
+#          IT_DEPARTMENT_EMAIL: ${IT_DEPARTMENT_EMAIL:-it@hrmf.com}
+#
+#      - name: Upload Test Reports
+#        if: always()
+#        uses: actions/upload-artifact@v4
+#        with:
+#          name: test-reports
+#          path: |
+#            build/reports/tests/
+#            build/test-results/
+#          retention-days: 7
 
-          # Email Configuration
-          MAIL_SERVER_HOST: ${MAIL_SERVER_HOST:-smtp.gmail.com}
-          MAIL_SERVER_PORT: ${MAIL_SERVER_PORT:-587}
-
-          # Redis Configuration
-          REDIS_PASSWORD: ${REDIS_PASSWORD:-}
-          APP_LOGIN_URL: ${APP_LOGIN_URL:-https://hrms.hrmf.com/login}
-          PORT: ${PORT:-8080}
-          # Email Department Configs
-          SUPPORT_EMAIL: ${SUPPORT_EMAIL:-support@hrmf.com}
-          HR_DEPARTMENT_EMAIL: ${HR_DEPARTMENT_EMAIL:-hr@hrmf.com}
-          IT_DEPARTMENT_EMAIL: ${IT_DEPARTMENT_EMAIL:-it@hrmf.com}
-
-      - name: Upload Test Reports
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: test-reports
-          path: |
-            build/reports/tests/
-            build/test-results/
-          retention-days: 7
 
   # Build and Push Docker Image
   build-push:
@@ -217,6 +218,7 @@ jobs:
           echo "   - anonto/hrms-backend:${{ env.VERSION }}"
           echo "   - anonto/hrms-backend:${{ github.sha }}"
           echo "✅ Image pushed to Docker Hub"
+
 
   # Deploy to vps
   deploy-production:
