@@ -128,7 +128,6 @@ jobs:
 #            build/test-results/
 #          retention-days: 7
 
-
   # Build and Push Docker Image
   build-push:
     runs-on: ubuntu-latest
@@ -227,32 +226,48 @@ jobs:
           script: |
             # Navigate to your application directory
             cd ~/application
-            
-            # Update docker-compose.yml with new image tag
+
+            # First, validate the docker-compose.yml file
+            echo "🔍 Validating docker-compose.yml..."
+            docker compose config
+
+            # Backup current docker-compose.yml
+            cp docker-compose.yml docker-compose.yml.backup
+
+            # Update the docker-compose.yml with new image tag
             echo "📝 Updating docker-compose.yml with new version..."
+            # Use sed carefully - check if it's working correctly
             sed -i "s|image: .*/hrms-backend:.*|image: anonto/hrms-backend:$VERSION|g" docker-compose.yml
-            
+
+            # Validate again after update
+            echo "🔍 Validating updated docker-compose.yml..."
+            docker compose config
+
             # Pull latest images
             echo "📥 Pulling latest Docker images..."
-            docker compose pull hrms_backend:latest
-            
+            docker compose pull
+
             # Stop and remove old containers
             echo "🛑 Stopping and removing old containers..."
-            docker compose down hrms_backend --remove-orphans
-            
+            docker compose down --remove-orphans
+
             # Start services with new image
             echo "🚀 Starting services with updated image..."
             docker compose up -d
-            
+
+            # Wait for services to be healthy
+            echo "⏳ Waiting for services to be healthy..."
+            sleep 30
+
             # Check if application is running
             echo "🔍 Checking application health..."
             if curl -f http://localhost:8080/actuator/health; then
               echo "✅ Application deployed successfully!"
-            
+
               # Clean up old images
               echo "🧹 Cleaning up unused Docker images..."
               docker image prune -f
-            
+
               # Keep only last 3 images
               echo "📦 Keeping only last 3 images..."
               docker images anonto/hrms-backend --format "{{.Tag}}" | tail -n +4 | xargs -I {} docker rmi anonto/hrms-backend:{} 2>/dev/null || true
@@ -260,9 +275,11 @@ jobs:
               echo "❌ Application health check failed!"
               echo "🔍 Checking logs..."
               docker compose logs hrms_backend
+              echo "📋 Checking docker-compose.yml syntax..."
+              cat -n docker-compose.yml | head -50
               exit 1
             fi
-            
+
             # Log deployment
             echo "📋 Logging deployment..."
             echo "=========================================" >> deployment.log
@@ -271,5 +288,5 @@ jobs:
             echo "Image Tag: $IMAGE_TAG" >> deployment.log
             echo "Commit SHA: ${{ github.sha }}" >> deployment.log
             echo "=========================================" >> deployment.log
-            
+
             echo "🎉 Deployment completed successfully!"
