@@ -179,11 +179,11 @@ jobs:
 
             # Pull latest images
             echo "📥 Pulling latest Docker images..."
-            sudo docker compose pull hrms_backend:latest
+            sudo docker compose pull anonto/hrms-backend:latest
             
             # Stop only the backend service
             echo "⚙  Stopping backend service..."
-            sudo docker compose stop hrms_backend
+            sudo docker compose stop hrms_backend 
             
             # Remove old backend container
             echo "🗑  Removing old backend container..."
@@ -202,7 +202,6 @@ jobs:
             echo "Deployment Time: $(date)" >> deployment.log
             echo "Version: $VERSION" >> deployment.log
             echo "Image Tag: $IMAGE_TAG" >> deployment.log
-            echo "Commit SHA: ${{ github.sha }}" >> deployment.log
             echo "=========================================" >> deployment.log
 
             echo "🎉 Deployment completed successfully!"
