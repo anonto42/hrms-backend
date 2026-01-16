@@ -45,7 +45,7 @@ public class SignInUseCaseImpl
                     .orElseThrow(() -> {
                         log.warn("Login failed: Email not found - {}", normalizedEmail);
                         return new CustomException(
-                                "Email address not found. Please check your email or sign up.",
+                                "Test updated",
                                 HttpStatus.NOT_FOUND
                         );
                     });
