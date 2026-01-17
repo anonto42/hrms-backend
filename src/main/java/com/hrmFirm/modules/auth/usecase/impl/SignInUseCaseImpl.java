@@ -3,6 +3,7 @@ package com.hrmFirm.modules.auth.usecase.impl;
 import com.hrmFirm.common.enums.UserStatus;
 import com.hrmFirm.common.exception.CustomException;
 import com.hrmFirm.common.security.JwtTokenProvider;
+import com.hrmFirm.common.validation.AccountStatusCheck;
 import com.hrmFirm.modules.auth.usecase.port.command.LoginCommand;
 import com.hrmFirm.modules.auth.usecase.port.input.SignInUseCase;
 import com.hrmFirm.modules.auth.usecase.port.output.RefreshTokenPort;
@@ -50,7 +51,7 @@ public class SignInUseCaseImpl
                         );
                     });
 
-            checkAccountStatus(user);
+            AccountStatusCheck.checkAccountStatus(user.getStatus());
 
             Authentication authentication = authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(
@@ -94,58 +95,6 @@ public class SignInUseCaseImpl
                     "An unexpected error occurred. Please try again later.",
                     HttpStatus.INTERNAL_SERVER_ERROR
             );
-        }
-    }
-
-    private void checkAccountStatus(UserEntity user) {
-        UserStatus status = user.getStatus();
-
-        switch (status) {
-            case TERMINATED:
-                throw new CustomException(
-                        "Your account has been terminated. Please contact support.",
-                        HttpStatus.FORBIDDEN
-                );
-
-            case LOCKED:
-                throw new CustomException(
-                        "Account is locked due to too many failed attempts. Please reset your password or contact support.",
-                        HttpStatus.FORBIDDEN
-                );
-
-            case SUSPENDED:
-                throw new CustomException(
-                        "Account is temporarily suspended. Please contact your administrator.",
-                        HttpStatus.FORBIDDEN
-                );
-
-            case PENDING:
-            case INVITATION_EXPIRED:
-                throw new CustomException(
-                        "Please verify your email address to activate your account.",
-                        HttpStatus.FORBIDDEN
-                );
-
-            case RESIGNED:
-                throw new CustomException(
-                        "This account is no longer active.",
-                        HttpStatus.FORBIDDEN
-                );
-
-            case PASSWORD_EXPIRED:
-                throw new CustomException(
-                        "Your password has expired. Please reset your password.",
-                        HttpStatus.FORBIDDEN
-                );
-
-            case ACTIVE:
-                break;
-
-            default:
-                throw new CustomException(
-                        "Account status is invalid. Please contact support.",
-                        HttpStatus.FORBIDDEN
-                );
         }
     }
 
