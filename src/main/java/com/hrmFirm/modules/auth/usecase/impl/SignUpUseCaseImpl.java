@@ -8,6 +8,7 @@ import com.hrmFirm.modules.auth.usecase.port.input.SignUpUseCase;
 import com.hrmFirm.modules.auth.usecase.port.output.NotificationPort;
 import com.hrmFirm.modules.auth.usecase.port.output.TempUserPort;
 import com.hrmFirm.modules.auth.usecase.port.output.UserAuthPort;
+import com.hrmFirm.modules.notification.infrastructure.properties.EmailProperties;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -27,6 +28,7 @@ public class SignUpUseCaseImpl
     private final TempUserPort tempUserPort;
     private final PasswordEncoder passwordEncoder;
     private final NotificationPort notificationPort;
+    private final EmailProperties emailProperties;
 
     @Override
     @Transactional
@@ -46,9 +48,9 @@ public class SignUpUseCaseImpl
                 LocalDateTime.now()
         );
 
-        var savedUser = tempUserPort.save(user);
+        tempUserPort.save(user);
 
-        String verificationUrl = "http://localhost:8080/api/v1/auth/verify-account/" + user.email();
+        String verificationUrl = emailProperties.getAppBaseUrl() +"/api/v1/auth/verify-account/" + user.email();
 
         notificationPort.accountVerificationNotification(
                 new AccountVerificationNotificationCommand(
